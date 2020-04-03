@@ -1,9 +1,9 @@
 <template>
 	<div class='chat'>
 		<div class='header'>
-			<div class='img' @click="gotoWeb('/')"><img src="../../static/right.png" alt=""></div>
+			<div class='img' @click="gotoWeb('/')"><img :src="img[0]" alt=""></div>
 			<div>楼楼</div>
-			<div class='img'><img src="../../static/ellipsis.png" alt=""></div>
+			<div class='img'><img :src="img[1]" alt=""></div>
 		</div>
 		<div class='body'>
 			<div class='chat-box' v-for="(item,index) in charData" :key='index'>
@@ -25,7 +25,7 @@
 						{{item.content}}
 					</div>
 					<div class='img'>
-						<img src="../../static/tou.png" alt="">
+						<img :src="item.img" alt="">
 					</div>
 				</div>
 			</div>
@@ -38,27 +38,23 @@
 </template>
 
 <script>
+	import api from '@/getapi.js'
 	export default{
 		name:'chat',
 		data(){
 			return{
+				img:['./static/right.png','./static/ellipsis.png'],
 				text:'',
 				charData:[
-				{img:'../../static/tou.png',type:1,isTime:true,time:'昨天 16：25',content:'您好,欢迎留言。'},
-				{img:'../../static/tou.png',type:2,isTime:true,time:'10：25',content:'我关注1916沙龙很久了......'},
-				{img:'../../static/tou.png',type:2,isTime:false,time:'10：25',content:'哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈'},
-				{img:'../../static/tou.png',type:2,isTime:false,time:'10：25',content:'哈哈哈'},
-				{img:'../../static/tou.png',type:2,isTime:false,time:'10：25',content:'哈哈哈'},
-				{img:'../../static/tou.png',type:2,isTime:false,time:'10：25',content:'哈哈哈'},
-				{img:'../../static/tou.png',type:2,isTime:false,time:'10：25',content:'哈哈哈'},
-				{img:'../../static/tou.png',type:2,isTime:false,time:'10：25',content:'哈哈哈'},
-				{img:'../../static/tou.png',type:2,isTime:false,time:'10：25',content:'哈哈哈'},
-				{img:'../../static/tou.png',type:2,isTime:false,time:'10：25',content:'哈哈哈'},
-				{img:'../../static/tou.png',type:2,isTime:false,time:'10：25',content:'哈哈哈'},
-				{img:'../../static/tou.png',type:1,isTime:true,time:'昨天 16：25',content:'您好,欢迎留言。欢迎留言欢迎留言欢迎留言欢迎留言欢迎留言欢迎留言欢迎留言欢迎留言欢迎留言欢迎留言欢迎留言欢迎留言欢迎留言欢迎留言'},
+					{img:'./static/tou.png',type:1,isTime:true,time:'昨天 16：25',content:'您好,欢迎留言。'},
 				],
-				screenHeight:''
+				screenHeight:'',
+				//客户留言和id
+				userChat:''
 			}
+		},
+		created() {
+			this.getChat()
 		},
 		mounted() {
 			this.scroll()
@@ -69,6 +65,16 @@
 			}
 		},
 		methods:{
+			//获取消息
+			getChat(){
+				api.getChat(JSON.parse(localStorage.getItem('userInfo')).user.openid).then((res)=>{
+					if(res.data.code==200){
+						this.userChat=res.data.data
+						this.charData=res.data.data.messages;
+						this.scrollBottom();
+					}
+				})
+			},
 			gotoWeb(e){
 				this.$router.push(e)
 			},
@@ -77,15 +83,19 @@
 				if(this.text==''){
 					return
 				}
+				
 				let data={
-					img:'../../static/tou.png',
-					type:2,
-					isTime:true,
-					time:'10：38',
+					userId:this.userChat.userId,
 					content:this.text
 				}
-				this.charData.push(data);
-				this.scrollBottom()
+				
+				api.send(data).then(res=>{
+					if(res.data.code==200){
+						this.getChat();
+						this.text="";
+						
+					}
+				})
 			},
 			//监听消息box高度变化
 			scroll(){

@@ -2,17 +2,17 @@
 	<!-- <div class='box'> -->
 		<div class='home'>
 			<div class='address'>
-				<div class='img'><img src="../../static/address.png" ></div>
+				<div class='img'><img :src="img[0]" ></div>
 				<div>当前城市：{{address}}</div>
 			</div>
 			<div class='home-body'>
 				<div v-for='(item,index) in button' :key='index' class='img' @click="click(index)">
-					<img :src="item" alt="">
+					<img :src="item" >
 				</div>
 			</div>
 			<div class='message'>
 				<div class='img' @click="gotoWeb('chat')">
-					<img src="../../static/liuyan.png" >
+					<img :src="img[1]" >
 				</div>
 			</div>
 		</div>
@@ -20,22 +20,91 @@
 </template>
 
 <script>
+	import api from '@/getapi.js'
 	export default{
 		name: "home",
 		data(){
 			return{
+				img:['./static/address.png','./static/liuyan.png'],
 				address:'武汉',
-				button:['../../static/button1.png','../../static/button2.png','../../static/button3.png','../../static/button4.png']
+				button:['./static/button1.png','./static/button2.png','./static/button3.png','./static/button4.png'],
+				userInfo:{informImgUrl:"www.baidu.com",packageUrl:"./static/button2.png"}
 			}
 		},
 		inject:['isAlertShow'],
 		created() {
-			console.log(this.$route.query)
+			// this.getUserInfo();
+			this.getJsSign();
+			
 		},
 		methods:{
+			//本地测试用
+			/*getUserInfo(){
+				api.openHome().then((res)=>{
+					if(res.data.code==200){
+						//todo 缺等待画面，数据不获取就无法点击
+						this.userInfo=res.data.data;
+						localStorage.setItem('userInfo',JSON.stringify(this.userInfo))
+					}
+				})
+			},*/
+			//获取wx权限
+			getJsSign(){
+				let self=this;
+				let url = location.href.split('#')[0];
+				api.getJsSign(url).then((res)=>{
+					if(res.data.code==200){
+						self.wx.config({
+						  debug: false,
+						  appId: res.data.data.appid,
+						  timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
+						  nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
+						  signature: res.data.data.signature, // 必填，签名
+						  jsApiList: ['getLocation'] // 必填，需要使用的JS接口列表
+						})
+						self.wx.ready(function(){
+							self.wx.getLocation({
+								type: 'wgs84',
+								success:function(res){
+									let data={
+										openid:self.$route.query.openid,
+										latitude:res.latitude,
+										longitude:res.longitude
+									}
+									self.getMarket(data)
+								}
+							})
+						})
+					}
+				})
+			},
+			getMarket(e){
+				api.market(e).then((res)=>{
+					if(res.data.code==200){
+						//todo 缺等待画面，数据不获取就无法点击
+						this.userInfo=res.data.data;
+						localStorage.setItem('userInfo',JSON.stringify(this.userInfo))
+					}
+				})
+			},
+			//点击各个按钮
 			click(e){
-				if(e==1){
-					this.isAlertShow(true)
+				if(e==0){
+					//问卷调查
+					window.location.href=this.userInfo.questionnaireUrl;
+				}else if(e==1){
+					//活动告知
+					var alert={
+						type:1,//1图片2wait
+						// url:this.userInfo.informImgUrl
+						url:"./static/button3.png"
+					}
+					this.isAlertShow(true,alert)
+				}else if(e==2){
+					//楼币红包
+					//todo 解除等待
+					console.log(this.userInfo)
+					window.location.href=this.userInfo.packageUrl
 				}
 			},
 			//跳往别的页面

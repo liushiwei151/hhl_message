@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view/>
-	<elastic v-show='isShow' :class='showAnimate'></elastic>
+	<elastic :imgUrl="alertImgUrl" v-show='isShow' :class='showAnimate' ></elastic>
   </div>
 </template>
 
@@ -23,12 +23,18 @@ export default {
 			showAnimate:{
 				show_in:false,
 				 show_out:false
-			}
+			},
+			alertImgUrl:''
 		}
 	},
 	methods:{
-		appAlertShow(e){
+		appAlertShow(e,f){
 			this.isShow=e;
+			if(f&&f.type==1){
+				this.alertImgUrl=f.url
+			}else if(f&&f.type==2){
+				//等待页面
+			}
 			if(e==true){
 				this.showAnimate.show_in=e;
 				this.showAnimate.show_out=!e

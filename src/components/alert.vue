@@ -1,7 +1,7 @@
 <template>
 	<div class='elastic' @click="close">
 		<div class='img' >
-			<img src="../../static/bg.png" alt="">
+			<img :src="imgUrl" alt="">
 		</div>
 	</div>
 </template>
@@ -10,6 +10,11 @@
 	export default{
 		name:'elastic',
 		inject:['isAlertShow'],
+		props:{
+			imgUrl:{
+				default:""
+			}
+		},
 		methods:{
 			close(){
 				this.isAlertShow(false)
