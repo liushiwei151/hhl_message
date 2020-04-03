@@ -26,16 +26,17 @@
 		data(){
 			return{
 				img:['./static/address.png','./static/liuyan.png'],
-				address:'武汉',
+				address:'',
 				button:['./static/button1.png','./static/button2.png','./static/button3.png','./static/button4.png'],
-				userInfo:{informImgUrl:"www.baidu.com",packageUrl:"./static/button2.png"}
+				userInfo:{informImgUrl:"www.baidu.com",packageUrl:"./static/button2.png"},
+				//初始传值
+				initData:[]
 			}
 		},
 		inject:['isAlertShow'],
 		created() {
-			// this.getUserInfo();
+			this.slice(location.href);
 			this.getJsSign();
-			
 		},
 		methods:{
 			//本地测试用
@@ -48,6 +49,13 @@
 					}
 				})
 			},*/
+			//截取url
+			slice(url){
+				for(let i =0;i<url.slice(44,-2).split('&').length;i++){
+					this.initData.push(url.slice(44,-2).split('&')[i].split('=')[1])
+				}
+				console.log(this.initData)
+			},
 			//获取wx权限
 			getJsSign(){
 				let self=this;
@@ -55,7 +63,7 @@
 				api.getJsSign(url).then((res)=>{
 					if(res.data.code==200){
 						self.wx.config({
-						  debug: false,
+						  debug: true,
 						  appId: res.data.data.appid,
 						  timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
 						  nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
@@ -67,7 +75,7 @@
 								type: 'wgs84',
 								success:function(res){
 									let data={
-										openid:self.$route.query.openid,
+										openid:self.initData[0],
 										latitude:res.latitude,
 										longitude:res.longitude
 									}
@@ -83,7 +91,8 @@
 					if(res.data.code==200){
 						//todo 缺等待画面，数据不获取就无法点击
 						this.userInfo=res.data.data;
-						localStorage.setItem('userInfo',JSON.stringify(this.userInfo))
+						localStorage.setItem('userInfo',JSON.stringify(this.userInfo));
+						this.address=res.data.data.user.city
 					}
 				})
 			},
@@ -102,8 +111,6 @@
 					this.isAlertShow(true,alert)
 				}else if(e==2){
 					//楼币红包
-					//todo 解除等待
-					console.log(this.userInfo)
 					window.location.href=this.userInfo.packageUrl
 				}
 			},

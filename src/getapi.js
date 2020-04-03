@@ -33,7 +33,11 @@ const market=(data)=>{
 }
 //获取wxsjdk权限
 const getJsSign=(data)=>{
-	return axios.get('/index/getJsSign?url='+data)
+	return axios.get('/index/getJsSign',{
+		params:{
+			url:data
+		}
+	})
 }
 //获取客户留言
 const getChat=(data)=>{
