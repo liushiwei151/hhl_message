@@ -33,10 +33,11 @@
 				initData:[]
 			}
 		},
-		inject:['isAlertShow'],
+		inject:['isAlertShow','isloadingshow'],
 		created() {
+			this.isloadingshow(true);
 			this.slice(location.href);
-			this.getJsSign();
+			
 		},
 		methods:{
 			//本地测试用
@@ -54,7 +55,7 @@
 				for(let i =0;i<url.slice(44,-2).split('&').length;i++){
 					this.initData.push(url.slice(44,-2).split('&')[i].split('=')[1])
 				}
-				console.log(this.initData)
+				this.getJsSign();
 			},
 			//获取wx权限
 			getJsSign(){
@@ -63,14 +64,15 @@
 				api.getJsSign(url).then((res)=>{
 					if(res.data.code==200){
 						self.wx.config({
-						  debug: true,
+						  debug: false,
 						  appId: res.data.data.appid,
 						  timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
 						  nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
 						  signature: res.data.data.signature, // 必填，签名
-						  jsApiList: ['getLocation'] // 必填，需要使用的JS接口列表
+						  jsApiList: ['getLocation','hideAllNonBaseMenuItem'] // 必填，需要使用的JS接口列表
 						})
 						self.wx.ready(function(){
+							self.wx.hideAllNonBaseMenuItem();
 							self.wx.getLocation({
 								type: 'wgs84',
 								success:function(res){
@@ -83,6 +85,8 @@
 								}
 							})
 						})
+					}else{
+						alert(res.data.msg)
 					}
 				})
 			},
@@ -92,7 +96,10 @@
 						//todo 缺等待画面，数据不获取就无法点击
 						this.userInfo=res.data.data;
 						localStorage.setItem('userInfo',JSON.stringify(this.userInfo));
-						this.address=res.data.data.user.city
+						this.address=res.data.data.user.city;
+						this.isloadingshow(false);
+					}else{
+						alert(res.data.msg)
 					}
 				})
 			},
@@ -105,8 +112,8 @@
 					//活动告知
 					var alert={
 						type:1,//1图片2wait
-						// url:this.userInfo.informImgUrl
-						url:"./static/button3.png"
+						url:this.userInfo.informImgUrl
+						// url:"./static/button3.png"
 					}
 					this.isAlertShow(true,alert)
 				}else if(e==2){

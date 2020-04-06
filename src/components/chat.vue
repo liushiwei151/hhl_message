@@ -50,10 +50,14 @@
 				],
 				screenHeight:'',
 				//客户留言和id
-				userChat:''
+				userChat:'',
+				initData:[]
 			}
 		},
+		inject:['isloadingshow'],
 		created() {
+			this.isloadingshow(true);
+			this.slice(location.href);
 			this.getChat()
 		},
 		mounted() {
@@ -65,6 +69,35 @@
 			}
 		},
 		methods:{
+			//截取url
+			slice(url){
+				for(let i =0;i<url.slice(44,-2).split('&').length;i++){
+					this.initData.push(url.slice(44,-2).split('&')[i].split('=')[1])
+				}
+				this.getJsSign();
+			},
+			//获取wx权限
+			getJsSign(){
+				let self=this;
+				let url = location.href.split('#')[0];
+				api.getJsSign(url).then((res)=>{
+					if(res.data.code==200){
+						self.wx.config({
+						  debug: false,
+						  appId: res.data.data.appid,
+						  timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
+						  nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
+						  signature: res.data.data.signature, // 必填，签名
+						  jsApiList: ['hideAllNonBaseMenuItem'] // 必填，需要使用的JS接口列表
+						})
+						self.wx.ready(function(){
+							self.wx.hideAllNonBaseMenuItem();
+						})
+					}else{
+						alert(res.data.msg)
+					}
+				})
+			},
 			//获取消息
 			getChat(){
 				api.getChat(JSON.parse(localStorage.getItem('userInfo')).user.openid).then((res)=>{
@@ -72,6 +105,9 @@
 						this.userChat=res.data.data
 						this.charData=res.data.data.messages;
 						this.scrollBottom();
+						this.isloadingshow(false);
+					}else{
+						alert(res.data.msg)
 					}
 				})
 			},
@@ -80,6 +116,7 @@
 			},
 			//发送
 			sendOut(){
+				this.isloadingshow(true);
 				if(this.text==''){
 					return
 				}
@@ -93,7 +130,8 @@
 					if(res.data.code==200){
 						this.getChat();
 						this.text="";
-						
+					}else{
+						alert(res.data.msg)
 					}
 				})
 			},
@@ -140,10 +178,10 @@
 			// border-left: #ccc solid 1px;
 			box-sizing: border-box;
 			transform:rotate(225deg);
-			-ms-transform:rotate(225degdeg);    /* IE 9 */
-			-moz-transform:rotate(225degdeg);   /* Firefox */
-			-webkit-transform:rotate(225degdeg); /* Safari 和 Chrome */
-			-o-transform:rotate(225degdeg);     /* Opera */  
+			-ms-transform:rotate(225deg);    /* IE 9 */
+			-moz-transform:rotate(225deg);   /* Firefox */
+			-webkit-transform:rotate(225deg); /* Safari 和 Chrome */
+			-o-transform:rotate(225deg);     /* Opera */  
 		}
 		.arrow-left{
 			 position: absolute;//相对定位

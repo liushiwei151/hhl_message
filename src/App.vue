@@ -2,6 +2,7 @@
   <div id="app">
     <router-view/>
 	<elastic :imgUrl="alertImgUrl" v-show='isShow' :class='showAnimate' ></elastic>
+	<div class="loading" v-if="isshow"></div>
   </div>
 </template>
 
@@ -14,11 +15,13 @@ export default {
 	},
 	provide(){
 		return{
+			isloadingshow: this.isloadingshow,
 			isAlertShow:this.appAlertShow
 		}
 	},
 	data(){
 		return{
+			isshow: false,
 			isShow:false,
 			showAnimate:{
 				show_in:false,
@@ -27,7 +30,13 @@ export default {
 			alertImgUrl:''
 		}
 	},
+	created() {
+		this.$router.push('/')
+	},
 	methods:{
+		isloadingshow(e) {
+			this.isshow = e;
+		},
 		appAlertShow(e,f){
 			this.isShow=e;
 			if(f&&f.type==1){
@@ -85,5 +94,24 @@ body{
 .img>img{
 	width: 100%;
 	height: 100%;
+}
+.loading {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	color: #fff;
+	background: #000 url(../static/loading.gif) no-repeat;
+	background-size: 100px 100px;
+	background-position: center center;
+	opacity: 0.6;
+	z-index: 9999;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=70);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 </style>
