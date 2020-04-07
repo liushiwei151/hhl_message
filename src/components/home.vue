@@ -131,6 +131,8 @@
 				}else if(e==2){
 					//楼币红包
 					window.location.href=this.userInfo.packageUrl
+				}else if(e==3){
+					window.location.href='https://w.url.cn/s/Aw8wCw9'
 				}
 			},
 			//跳往别的页面
