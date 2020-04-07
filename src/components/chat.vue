@@ -20,8 +20,8 @@
 					</div>
 				</div>
 				<div v-if="item.type==2" class='right'>
-          <div class='icon wait' v-show="isSend=='send'"></div>
-          <div class='icon sendErr' v-show="isSend=='err'">!</div>
+					<div class='icon wait' v-show="isSend=='send'"></div>
+					<div class='icon sendErr' v-show="isSend=='err'">!</div>
 					<div class='card'>
 						<div class='arrow-right'></div>
 						{{item.content}}
@@ -33,7 +33,7 @@
 			</div>
 		</div>
 		<div class='footer'>
-			<div class='footer-input'><input type="text"  v-model="text"></div>
+			<div class='footer-input'><input type="text" v-model="text"></div>
 			<div class='sendOut' @click="sendOut">发送</div>
 		</div>
 	</div>
@@ -41,25 +41,36 @@
 
 <script>
 	import api from '@/getapi.js'
-	export default{
-		name:'chat',
-		data(){
-			return{
-				img:['./static/right.png','./static/ellipsis.png'],
-				text:'',
-				charData:[
-					{img:'./static/tou.png',type:1,isTime:true,time:'昨天 16：25',content:'您好,欢迎留言asdfasdfsdfaasdfsdfsdfasdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdf。'},
-					{img:'./static/tou.png',type:2,isTime:true,time:'昨天 16：25',content:'您好,欢迎留言d;glasdfasdfasdfasdfsdfsasdfasdasdasdhdjsldfjlgjdlskfjglkdjffgjldkjghlkdjlhkdjfkljsdfgdfgdfgdfg。'},
+	export default {
+		name: 'chat',
+		data() {
+			return {
+				img: ['./static/right.png', './static/ellipsis.png'],
+				text: '',
+				charData: [{
+						img: './static/tou.png',
+						type: 1,
+						isTime: true,
+						time: '昨天 16：25',
+						content: '您好,欢迎留言asdfasdfsdfaasdfsdfsdfasdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdf。'
+					},
+					{
+						img: './static/tou.png',
+						type: 2,
+						isTime: true,
+						time: '昨天 16：25',
+						content: '您好,欢迎留言d;glasdfasdfasdfasdfsdfsasdfasdasdasdhdjsldfjlgjdlskfjglkdjffgjldkjghlkdjlhkdjfkljsdfgdfgdfgdfg。'
+					},
 				],
-				screenHeight:'',
+				screenHeight: '',
 				//客户留言和id
-				userChat:'',
-				initData:[],
-        //
-        isSend:''
+				userChat: '',
+				initData: [],
+				//
+				isSend: ''
 			}
 		},
-		inject:['isloadingshow'],
+		inject: ['isloadingshow'],
 		created() {
 			this.isloadingshow(true);
 			this.slice(location.href);
@@ -68,101 +79,103 @@
 		mounted() {
 			this.scroll()
 		},
-		watch:{
-			screenHeight(){
+		watch: {
+			screenHeight() {
 				this.scrollBottom()
 			}
 		},
-		methods:{
+		methods: {
 			//截取url
-			slice(url){
-				for(let i =0;i<url.slice(44,-2).split('&').length;i++){
-					this.initData.push(url.slice(44,-2).split('&')[i].split('=')[1])
+			slice(url) {
+				for (let i = 0; i < url.slice(44, -2).split('&').length; i++) {
+					this.initData.push(url.slice(44, -2).split('&')[i].split('=')[1])
 				}
 				this.getJsSign();
 			},
 			//获取wx权限
-			getJsSign(){
-				let self=this;
+			getJsSign() {
+				let self = this;
 				let url = location.href.split('#')[0];
-				api.getJsSign(url).then((res)=>{
-					if(res.data.code==200){
+				api.getJsSign(url).then((res) => {
+					if (res.data.code == 200) {
 						self.wx.config({
-						  debug: false,
-						  appId: res.data.data.appid,
-						  timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
-						  nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
-						  signature: res.data.data.signature, // 必填，签名
-						  jsApiList: ['hideAllNonBaseMenuItem'] // 必填，需要使用的JS接口列表
+							debug: false,
+							appId: res.data.data.appid,
+							timestamp: res.data.data.timestamp, // 必填，生成签名的时间戳
+							nonceStr: res.data.data.nonceStr, // 必填，生成签名的随机串
+							signature: res.data.data.signature, // 必填，签名
+							jsApiList: ['hideAllNonBaseMenuItem'] // 必填，需要使用的JS接口列表
 						})
-						self.wx.ready(function(){
+						self.wx.ready(function() {
 							self.wx.hideAllNonBaseMenuItem();
 						})
-					}else{
+					} else {
 						alert(res.data.msg)
 					}
 				})
 			},
 			//获取消息
-			getChat(){
-				api.getChat(JSON.parse(localStorage.getItem('userInfo')).user.openid).then((res)=>{
-					if(res.data.code==200){
-						this.userChat=res.data.data
-						this.charData=res.data.data.messages;
+			getChat() {
+				api.getChat(JSON.parse(localStorage.getItem('userInfo')).user.openid).then((res) => {
+					if (res.data.code == 200) {
+						this.userChat = res.data.data
+						this.charData = res.data.data.messages;
 						this.scrollBottom();
 						this.isloadingshow(false);
-					}else{
+					} else {
 						alert(res.data.msg)
 					}
 				})
 			},
-			gotoWeb(e){
+			gotoWeb(e) {
 				this.$router.push(e)
 			},
 			//发送
-			sendOut(){
-				if(this.text==''){
+			sendOut() {
+				if (this.text == '') {
 					return
 				}
-        this.isSend='wait';
-				let data={
-					userId:this.userChat.userId,
-					content:this.text
+				// this.isSend='wait';
+				let data = {
+					userId: this.userChat.userId,
+					content: this.text
 				}
 
-				api.send(data).then(res=>{
-					if(res.data.code==200){
-            let newData={
-              img:this.charData.img,
-              type:2,
-              isTime:false,
-              time:'',
-              content:this.text
-              }
-            this.charData.push()
-            this.isSend="";
-						this.text="";
-					}else{
-						this.isSend='err'
+				api.send(data).then(res => {
+					if (res.data.code == 200) {
+						/*let newData = {
+							img: this.charData.img,
+							type: 2,
+							isTime: false,
+							time: '',
+							content: this.text
+						}
+						this.charData.push()
+						 this.isSend = "";*/
+						 this.getChat()
+						this.text = "";
+					} else {
+						alert(res.data.msg)
+						// this.isSend = 'err'
 					}
 				})
 			},
 			//监听消息box高度变化
-			scroll(){
-				 var container = this.$el.querySelector(".body");
-				 this.screenHeight = container.clientHeight;
-				 	 window.onresize=()=>{
-				 	return (() => {
-				 			 this.screenHeight = container.clientHeight;
-				 			 })();
-				 	}
+			scroll() {
+				var container = this.$el.querySelector(".body");
+				this.screenHeight = container.clientHeight;
+				window.onresize = () => {
+					return (() => {
+						this.screenHeight = container.clientHeight;
+					})();
+				}
 			},
 			//滚动滚至最下
-			scrollBottom(){
-				this.$nextTick(()=>{
-						var container = this.$el.querySelector(".body");
-						container.scrollTop = container.scrollHeight;
-						// container.scrollTop = 0;
+			scrollBottom() {
+				this.$nextTick(() => {
+					var container = this.$el.querySelector(".body");
+					container.scrollTop = container.scrollHeight;
+					// container.scrollTop = 0;
 				})
 			}
 		}
@@ -170,18 +183,19 @@
 </script>
 
 <style scoped lang="less">
-	.card{
-		 position: relative;
-		 background: #ffffff;
-		 border-radius: 5px;//外部矩形给圆角
-		 display: flex;//布局选用flex布局
-		 align-items: center;//内部元素垂直居中
+	.card {
+		position: relative;
+		background: #ffffff;
+		border-radius: 5px; //外部矩形给圆角
+		display: flex; //布局选用flex布局
+		align-items: center; //内部元素垂直居中
 		padding: 27px 36px;
 		box-sizing: border-box;
 		font-size: 28px;
-		.arrow-right{
-			position: absolute;//相对定位
-			background:  rgb(158,234,106);
+
+		.arrow-right {
+			position: absolute; //相对定位
+			background: rgb(158, 234, 106);
 			width: 10px;
 			height: 10px;
 			right: -6px;
@@ -189,40 +203,52 @@
 			// border-bottom: #ccc solid 1px;
 			// border-left: #ccc solid 1px;
 			box-sizing: border-box;
-			transform:rotate(225deg);
-			-ms-transform:rotate(225deg);    /* IE 9 */
-			-moz-transform:rotate(225deg);   /* Firefox */
-			-webkit-transform:rotate(225deg); /* Safari 和 Chrome */
-			-o-transform:rotate(225deg);     /* Opera */
+			transform: rotate(225deg);
+			-ms-transform: rotate(225deg);
+			/* IE 9 */
+			-moz-transform: rotate(225deg);
+			/* Firefox */
+			-webkit-transform: rotate(225deg);
+			/* Safari 和 Chrome */
+			-o-transform: rotate(225deg);
+			/* Opera */
 		}
-		.arrow-left{
-			 position: absolute;//相对定位
-			 background: #fff;
-			 width: 10px;
-			 height: 10px;
-			 left: -6px;
-			 font-size: 0;
-			 // border-bottom: #ccc solid 1px;
-			 // border-left: #ccc solid 1px;
-			 box-sizing: border-box;
-			 transform:rotate(45deg);
-			 -ms-transform:rotate(45deg);    /* IE 9 */
-			 -moz-transform:rotate(45deg);   /* Firefox */
-			 -webkit-transform:rotate(45deg); /* Safari 和 Chrome */
-			 -o-transform:rotate(45deg);     /* Opera */
+
+		.arrow-left {
+			position: absolute; //相对定位
+			background: #fff;
+			width: 10px;
+			height: 10px;
+			left: -6px;
+			font-size: 0;
+			// border-bottom: #ccc solid 1px;
+			// border-left: #ccc solid 1px;
+			box-sizing: border-box;
+			transform: rotate(45deg);
+			-ms-transform: rotate(45deg);
+			/* IE 9 */
+			-moz-transform: rotate(45deg);
+			/* Firefox */
+			-webkit-transform: rotate(45deg);
+			/* Safari 和 Chrome */
+			-o-transform: rotate(45deg);
+			/* Opera */
 		}
 	}
-	@center:{
+
+	@center: {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 	}
-	.chat{
+
+	.chat {
 		position: fixed;
 		width: 100%;
 		height: 100%;
 	}
-	.header{
+
+	.header {
 		z-index: 100;
 		display: flex;
 		justify-content: space-between;
@@ -230,105 +256,122 @@
 		height: 88px;
 		padding: 0 30px;
 		box-sizing: border-box;
-		background-color: rgb(246,240,229);
+		background-color: rgb(246, 240, 229);
 		font-size: 36px;
 		position: absolute;
 		top: 0;
 		width: 100%;
-		.img:first-of-type{
+
+		.img:first-of-type {
 			width: 15px;
 		}
-		.img:last-of-type{
+
+		.img:last-of-type {
 			width: 33px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
 	}
-	.body{
+
+	.body {
 		height: 100%;
-		padding-top:88px;
-		padding-bottom:96px;
+		padding-top: 88px;
+		padding-bottom: 96px;
 		box-sizing: border-box;
-		background-color: rgb(246,240,229);
+		background-color: rgb(246, 240, 229);
 		overflow: scroll;
-		.chat-box{
-			margin-bottom:20px ;
+
+		.chat-box {
+			margin-bottom: 20px;
 			text-align: left;
-			.left{
+
+			.left {
 				display: flex;
 				justify-content: left;
 				align-items: center;
 				padding-right: 20px;
 				box-sizing: border-box;
-				.card{
+
+				.card {
 					max-width: 540px;
-          word-break: break-all;
+					word-break: break-all;
 				}
 			}
-			.right{
+
+			.right {
 				display: flex;
 				justify-content: flex-end;
 				align-items: center;
 				padding-left: 20px;
 				box-sizing: border-box;
-        .icon{
-          width: 40px;
-          height: 40px;
-          margin-right:10px ;
-        }
-        .sendErr{
-          border-radius: 50%;
-          background-color: red;
-          font-weight: 1000;
-          color: #fff;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        .wait{
-          background: url(../../static/loading.gif) no-repeat;
-          background-size: 100% 100%;
-        }
-				.card{
-					background-color: rgb(158,234,106);
+
+				.icon {
+					width: 40px;
+					height: 40px;
+					margin-right: 10px;
+				}
+
+				.sendErr {
+					border-radius: 50%;
+					background-color: red;
+					font-weight: 1000;
+					color: #fff;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				}
+
+				.wait {
+					background: url(../../static/loading.gif) no-repeat;
+					background-size: 100% 100%;
+				}
+
+				.card {
+					background-color: rgb(158, 234, 106);
 					max-width: 540px;
-          word-break: break-all;
+					word-break: break-all;
 				}
 			}
 		}
-		.time{
-			color: rgb(153,153,153);
+
+		.time {
+			color: rgb(153, 153, 153);
 			font-size: 24px;
 			height: 100px;
 			@center()
 		}
-		.img{
+
+		.img {
 			width: 80px;
 			height: 80px;
 			margin: 0 30px;
 		}
 	}
-	.footer{
+
+	.footer {
 		z-index: 100;
 		height: 96px;
 		width: 100%;
-		background-color: rgb(248,211,164);
+		background-color: rgb(248, 211, 164);
 		position: absolute;
 		bottom: 0;
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
-		.footer-input{
+
+		.footer-input {
 			width: 490px;
 			height: 73px;
-			input{
+
+			input {
 				width: 100%;
 				height: 100%;
 				border: none;
 			}
 		}
-		.sendOut{
+
+		.sendOut {
 			border: solid 4px black;
 			border-radius: 10px;
 			padding: 12px 42px;

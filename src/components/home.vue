@@ -1,19 +1,22 @@
 <template>
 	<!-- <div class='box'> -->
 		<div class='home'>
-			<div class='address'>
+			<div class='address' v-show="isActivity">
 				<div class='img'><img :src="img[0]" ></div>
 				<div>当前城市：{{address}}</div>
 			</div>
-			<div class='home-body'>
+			<div class='home-body' v-show="isActivity">
 				<div v-for='(item,index) in button' :key='index' class='img' @click="click(index)">
 					<img :src="item" >
 				</div>
 			</div>
-			<div class='message'>
+			<div class='message' v-show="isActivity">
 				<div class='img' @click="gotoWeb('chat')">
 					<img :src="img[1]" >
 				</div>
+			</div>
+			<div class='noActivity' v-show="!isActivity">
+				敬请期待！
 			</div>
 		</div>
 	<!-- </div> -->
@@ -33,11 +36,20 @@
 				initData:[]
 			}
 		},
+		computed:{
+			//是否有活动
+			isActivity(){
+				if(this.address=='武汉市'){
+					return true
+				}else{
+					return false
+				}
+			}
+		},
 		inject:['isAlertShow','isloadingshow'],
 		created() {
 			this.isloadingshow(true);
 			this.slice(location.href);
-			
 		},
 		methods:{
 			//本地测试用
@@ -130,6 +142,14 @@
 </script>
 
 <style scoped lang="less">
+	.noActivity{
+		height: 50vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: 1000;
+		font-size: 50px;
+	}
 	.box{
 		position: fixed;
 		width: 100%;
