@@ -20,6 +20,8 @@
 					</div>
 				</div>
 				<div v-if="item.type==2" class='right'>
+          <div class='icon wait' v-show="isSend=='send'"></div>
+          <div class='icon sendErr' v-show="isSend=='err'">!</div>
 					<div class='card'>
 						<div class='arrow-right'></div>
 						{{item.content}}
@@ -46,12 +48,15 @@
 				img:['./static/right.png','./static/ellipsis.png'],
 				text:'',
 				charData:[
-					{img:'./static/tou.png',type:1,isTime:true,time:'昨天 16：25',content:'您好,欢迎留言。'},
+					{img:'./static/tou.png',type:1,isTime:true,time:'昨天 16：25',content:'您好,欢迎留言asdfasdfsdfaasdfsdfsdfasdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdf。'},
+					{img:'./static/tou.png',type:2,isTime:true,time:'昨天 16：25',content:'您好,欢迎留言d;glasdfasdfasdfasdfsdfsasdfasdasdasdhdjsldfjlgjdlskfjglkdjffgjldkjghlkdjlhkdjfkljsdfgdfgdfgdfg。'},
 				],
 				screenHeight:'',
 				//客户留言和id
 				userChat:'',
-				initData:[]
+				initData:[],
+        //
+        isSend:''
 			}
 		},
 		inject:['isloadingshow'],
@@ -116,22 +121,29 @@
 			},
 			//发送
 			sendOut(){
-				this.isloadingshow(true);
 				if(this.text==''){
 					return
 				}
-				
+        this.isSend='wait';
 				let data={
 					userId:this.userChat.userId,
 					content:this.text
 				}
-				
+
 				api.send(data).then(res=>{
 					if(res.data.code==200){
-						this.getChat();
+            let newData={
+              img:this.charData.img,
+              type:2,
+              isTime:false,
+              time:'',
+              content:this.text
+              }
+            this.charData.push()
+            this.isSend="";
 						this.text="";
 					}else{
-						alert(res.data.msg)
+						this.isSend='err'
 					}
 				})
 			},
@@ -150,7 +162,7 @@
 				this.$nextTick(()=>{
 						var container = this.$el.querySelector(".body");
 						container.scrollTop = container.scrollHeight;
-						// container.scrollTop = 0;			 
+						// container.scrollTop = 0;
 				})
 			}
 		}
@@ -181,7 +193,7 @@
 			-ms-transform:rotate(225deg);    /* IE 9 */
 			-moz-transform:rotate(225deg);   /* Firefox */
 			-webkit-transform:rotate(225deg); /* Safari 和 Chrome */
-			-o-transform:rotate(225deg);     /* Opera */  
+			-o-transform:rotate(225deg);     /* Opera */
 		}
 		.arrow-left{
 			 position: absolute;//相对定位
@@ -250,7 +262,8 @@
 				padding-right: 20px;
 				box-sizing: border-box;
 				.card{
-					max-width: 600px;
+					max-width: 540px;
+          word-break: break-all;
 				}
 			}
 			.right{
@@ -259,9 +272,28 @@
 				align-items: center;
 				padding-left: 20px;
 				box-sizing: border-box;
+        .icon{
+          width: 40px;
+          height: 40px;
+          margin-right:10px ;
+        }
+        .sendErr{
+          border-radius: 50%;
+          background-color: red;
+          font-weight: 1000;
+          color: #fff;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .wait{
+          background: url(../../static/loading.gif) no-repeat;
+          background-size: 100% 100%;
+        }
 				.card{
 					background-color: rgb(158,234,106);
-					max-width: 600px;
+					max-width: 540px;
+          word-break: break-all;
 				}
 			}
 		}
