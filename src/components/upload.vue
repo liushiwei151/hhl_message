@@ -32,7 +32,7 @@
 			<div>{{ textarea.length }}/150</div>
 		</div>
 		<div class="tijiao">
-			<div v-show='status==0' @click="Submission" :class='{active:!isActive}'>{{ buttonContent }}</div>
+			<div v-show='status==0' @click="Submission" :class='{active:!isActive,active2:isClick}'>{{ buttonContent }}</div>
 		</div>
 		<div class="textbottom" v-show="isSubmission">
 			<div class="gth">!</div>
@@ -66,6 +66,10 @@ export default {
       pictureWorksId:'',
       //审核状态
       status:0,
+      //是否点击
+      isClick:false,
+      //上传图片中不允许点击
+      isUpload:true
 		};
 	},
 	computed:{
@@ -96,13 +100,17 @@ export default {
 		},
 		//提交
 		Submission() {
-			if(!this.isActive){
+			if(!this.isActive||this.isClick){
 				return
 			}
+      if(this.isUpload===false){
+        return
+      }
 			//接口
-
+      console.log(123)
 			if(this.buttonContent=='提交'){
 				//提交成功
+        this.isClick=true;
           this.addPicture()
 			}else{
 				//取消提交
@@ -206,7 +214,6 @@ export default {
 							_this.localIdImgs.push(item);
 						});
 					}
-					console.log(_this.localIdImgs);
 					_this.wxuploadImage(localIds);
 				}
 			});
@@ -214,6 +221,7 @@ export default {
 		// 上传图片
 		wxuploadImage(localIds) {
 			let _this = this;
+      _this.isUpload=false;
 			var i = 0;
 			var length = localIds.length;
 			var upload = function() {
@@ -255,6 +263,8 @@ export default {
       }
       api.addPicture(data).then((res)=>{
         if(res.data.code==200){
+          self.pictureWorksId=res.data.data;
+          self.isClick=false;
           self.isSubmission = true;
           self.buttonContent = '删除, 重新上传';
         }
@@ -263,9 +273,11 @@ export default {
    //删除提交的作品
    delPicture(){
      var self =this;
+     self.isClick=true;
      api.delPicture(this.pictureWorksId).then((res)=>{
        if(res.data.code==200){
         self.isSubmission=false;
+        self.isClick=false;
         self.buttonContent = '提交';
         self.localIdImgs=[];
         self.textarea=""
@@ -277,8 +289,8 @@ export default {
       var self= this
       api.uploadImg(e).then((res)=>{
         if(res.data.code==200){
-            self.cwlocalIdImgs.push(res.data.data)
-          return
+            self.cwlocalIdImgs.push(res.data.data);
+            self.isUpload=true;
         }else{
           alert('图片上传失败')
         }
@@ -296,9 +308,6 @@ export default {
 						let localData = res.localData; // localData是图片的base64数据，可以用img标签显示
 						localData = localData.replace('jgp', 'jpeg');
 						_this.localIdImgs.push(localData);
-						if (_this.localIdImgs.length >= _this.imgaesMaxLenght) {
-							_this.imgLenght = false;
-						}
 						i++;
 						i < length && upload();
 					}
@@ -306,9 +315,6 @@ export default {
 			};
 			upload();
 		},
-		upload() {
-			this.$refs.avatarInput.dispatchEvent(new MouseEvent('click'));
-		}
 	}
 };
 </script>
@@ -319,7 +325,7 @@ ul {
 	margin: 0;
 	padding: 0;
 }
-.tijiao .active{
+.tijiao .active,.tijiao .active2{
 	background-color: #ccc;
 	color: dimgray
 }
