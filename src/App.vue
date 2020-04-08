@@ -41,8 +41,9 @@ export default {
 			this.isShow=e;
 			if(f&&f.type==1){
 				this.alertImgUrl=f.url
+        // this.alertImgUrl='http://qrhhl.yunyutian.cn/huanghelou1916-images/market_inform_image/96daaecf09e640f29246bf2a1c64d456.jpg'
+        // this.alertImgUrl='https://pic.cwyyt.cn/upload/img/20200408/1130553055_icon.png'
 			}else if(f&&f.type==2){
-				//等待页面
 			}
 			if(e==true){
 				this.showAnimate.show_in=e;
@@ -68,7 +69,7 @@ export default {
 	  {
 	     0% {opacity: 0; transform: scale(0);}
 	     100%{opacity: 1; transform: scale(1);}
-	
+
 	  }
 	  .show_out{
 	      animation: go_out 1s;
@@ -78,7 +79,7 @@ export default {
 	    {
 	       0% {opacity: 1; transform: scale(1);visibility: visible;}
 	       100%{opacity: 0; transform: scale(0);}
-	  
+
 	    }*/
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

@@ -1,7 +1,10 @@
 import axios from 'axios'
 import qs from 'qs'
 // axios.defaults.timeout = 3000; //响应时间
+//测试
  axios.defaults.baseURL = 'http://qrhhl.yunyutian.cn/huanghelou1916-market/market';   //配置接口地址
+ //正式
+ // axios.defaults.baseURL = 'https://qr.hhl1916.com/huanghelou1916-market/market';   //配置接口地址
 axios.defaults.withCredentials = true;
 
 //POST传参序列化(添加请求拦截器)
@@ -43,7 +46,7 @@ const getJsSign=(data)=>{
 const getChat=(data)=>{
 	return axios.get('/message/getMessage/'+data)
 }
-//测试发送消息
+//发送消息
 const send=(data)=>{
 	return axios.post('/message/send',data,{
 		headers: {
@@ -51,10 +54,30 @@ const send=(data)=>{
 		    }
 	})
 }
+//获取用户是否参加活动是否有图片
+const getActivityInfo=(data)=>{
+  return axios.get('/picture/getActivityInfo/'+data.pictureActivityId+'/'+data.userId)
+}
+//上传图片
+const uploadImg=(data)=>{
+  return axios.post('/picture/upload/'+data)
+}
+//提交作品
+const addPicture=(data)=>{
+  return axios.post('/picture/add',data)
+}
+//删除提交的作品
+const delPicture=(data)=>{
+  return axios.post('/picture/delete/'+data)
+}
 export default {
 	openHome,
 	market,
 	getJsSign,
 	getChat,
-	send
+	send,
+  getActivityInfo,
+  uploadImg,
+  addPicture,
+  delPicture
 }

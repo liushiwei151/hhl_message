@@ -132,7 +132,7 @@
 					//楼币红包
 					window.location.href=this.userInfo.packageUrl
 				}else if(e==3){
-					window.location.href='https://w.url.cn/s/Aw8wCw9'
+          this.$router.push('/upload')
 				}
 			},
 			//跳往别的页面

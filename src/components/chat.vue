@@ -47,21 +47,7 @@
 			return {
 				img: ['./static/right.png', './static/ellipsis.png'],
 				text: '',
-				charData: [{
-						img: './static/tou.png',
-						type: 1,
-						isTime: true,
-						time: '昨天 16：25',
-						content: '您好,欢迎留言asdfasdfsdfaasdfsdfsdfasdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdf。'
-					},
-					{
-						img: './static/tou.png',
-						type: 2,
-						isTime: true,
-						time: '昨天 16：25',
-						content: '您好,欢迎留言d;glasdfasdfasdfasdfsdfsasdfasdasdasdhdjsldfjlgjdlskfjglkdjffgjldkjghlkdjlhkdjfkljsdfgdfgdfgdfg。'
-					},
-				],
+				charData: [],
 				screenHeight: '',
 				//客户留言和id
 				userChat: '',

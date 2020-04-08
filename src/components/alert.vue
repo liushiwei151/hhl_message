@@ -37,6 +37,14 @@
 		.img{
 			z-index: 100;
 			box-sizing: border-box;
+      max-width: 750px;
+      max-height: 95vh;
+      img{
+        width: 100%;
+        height: 100%;
+        max-width: 750px;
+        max-height: 95vh;
+      }
 		}
 	}
 </style>
