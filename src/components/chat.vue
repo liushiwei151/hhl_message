@@ -19,7 +19,7 @@
 						{{item.content}}
 					</div>
 				</div>
-				<div v-if="item.type==2" class='right'>
+				<div v-if="item.type==2" class='right' @touchstart='start' @touchend='end'>
 					<div class='icon wait' v-show="isSend=='send'"></div>
 					<div class='icon sendErr' v-show="isSend=='err'">!</div>
 					<div class='card'>
@@ -52,8 +52,10 @@
 				//客户留言和id
 				userChat: '',
 				initData: [],
-				//
-				isSend: ''
+				//是否发送
+				isSend: '',
+        //长按计时器
+        loop:''
 			}
 		},
 		inject: ['isloadingshow'],
@@ -71,6 +73,21 @@
 			}
 		},
 		methods: {
+      //长按开始
+      start(){
+        var self =this;
+        clearTimeout(this.loop); //再次清空定时器，防止重复注册定时器
+
+              this.loop = setTimeout(() => {
+
+                self.textarea='长按了'
+
+              }, 1000);
+      },
+      //长按结束
+      end(){
+         clearTimeout(this.loop);
+      },
 			//截取url
 			slice(url) {
 				for (let i = 0; i < url.slice(44, -2).split('&').length; i++) {
@@ -169,6 +186,13 @@
 </script>
 
 <style scoped lang="less">
+  * {
+      -webkit-touch-callout:none;
+      -webkit-user-select:none;
+      -moz-user-select:none;
+      -ms-user-select:none;
+      user-select:none;
+  }
 	.card {
 		position: relative;
 		background: #ffffff;

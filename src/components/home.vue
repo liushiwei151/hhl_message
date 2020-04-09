@@ -3,7 +3,7 @@
 		<div class='home'>
 			<div class='address' v-show="isActivity">
 				<div class='img'><img :src="img[0]" ></div>
-				<div>当前城市：{{address}}</div>
+				<div>当前城市1：{{address}}</div>
 			</div>
 			<div class='home-body' v-show="isActivity">
 				<div v-for='(item,index) in button' :key='index' class='img' @click="click(index)">
@@ -18,6 +18,7 @@
 			<div class='noActivity' v-show="!isActivity">
 				敬请期待！
 			</div>
+      <iframe v-show='iframeData.isShow' class='iframe' :src="iframeData.url" frameborder="0"></iframe>
 		</div>
 	<!-- </div> -->
 </template>
@@ -33,7 +34,11 @@
 				button:['./static/button1.png','./static/button2.png','./static/button3.png','./static/button4.png'],
 				userInfo:{informImgUrl:"",packageUrl:"",questionnaireUrl:'',pictureActivityId:''},
 				//初始传值
-				initData:[]
+				initData:[],
+        iframeData:{
+          isShow:false,
+          url:''
+        }
 			}
 		},
 		computed:{
@@ -111,10 +116,13 @@
 					//问卷调查
           if(this.userInfo.questionnaireUrl==""){
             this.isTips('敬请期待！');
-            console.log(123)
             return
           }
-					window.location.href=this.userInfo.questionnaireUrl;
+          this.iframeData={
+            isShow:true,
+            url:this.userInfo.questionnaireUrl
+          }
+					// window.location.href=this.userInfo.questionnaireUrl;
 				}else if(e==1){
           if(this.userInfo.informImgUrl==""){
             this.isTips('敬请期待！')
@@ -151,6 +159,14 @@
 </script>
 
 <style scoped lang="less">
+  .iframe{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color:#fff ;
+  }
 	.noActivity{
 		height: 50vh;
 		display: flex;
