@@ -289,7 +289,9 @@ export default {
       var self= this
       api.uploadImg(e).then((res)=>{
         if(res.data.code==200){
+          if(self.isClick===false){
             self.cwlocalIdImgs.push(res.data.data);
+          }
             self.isUpload=true;
         }else{
           alert('图片上传失败')

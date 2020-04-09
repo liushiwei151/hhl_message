@@ -42,7 +42,7 @@
 				if(this.address=='武汉市'){
 					return true
 				}else{
-					return true
+					return false
 				}
 			}
 		},
@@ -52,16 +52,6 @@
 			this.slice(location.href);
 		},
 		methods:{
-			//本地测试用
-			/*getUserInfo(){
-				api.openHome().then((res)=>{
-					if(res.data.code==200){
-						//todo 缺等待画面，数据不获取就无法点击
-						this.userInfo=res.data.data;
-						localStorage.setItem('userInfo',JSON.stringify(this.userInfo))
-					}
-				})
-			},*/
 			//截取url
 			slice(url){
 				for(let i =0;i<url.slice(44,-2).split('&').length;i++){
