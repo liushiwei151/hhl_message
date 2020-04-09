@@ -31,7 +31,7 @@
 				img:['./static/address.png','./static/liuyan.png'],
 				address:'',
 				button:['./static/button1.png','./static/button2.png','./static/button3.png','./static/button4.png'],
-				userInfo:{informImgUrl:"www.baidu.com",packageUrl:"./static/button2.png"},
+				userInfo:{informImgUrl:"",packageUrl:"",questionnaireUrl:'',pictureActivityId:''},
 				//初始传值
 				initData:[]
 			}
@@ -42,11 +42,11 @@
 				if(this.address=='武汉市'){
 					return true
 				}else{
-					return false
+					return true
 				}
 			}
 		},
-		inject:['isAlertShow','isloadingshow'],
+		inject:['isAlertShow','isloadingshow','isTips'],
 		created() {
 			this.isloadingshow(true);
 			this.slice(location.href);
@@ -90,8 +90,8 @@
 								success:function(res){
 									let data={
 										openid:self.initData[0],
-										latitude:res.latitude,
-										longitude:res.longitude
+										latitude:res.latitude||0,
+										longitude:res.longitude||0
 									}
 									self.getMarket(data)
 								}
@@ -119,8 +119,17 @@
 			click(e){
 				if(e==0){
 					//问卷调查
+          if(this.userInfo.questionnaireUrl==""){
+            this.isTips('敬请期待！');
+            console.log(123)
+            return
+          }
 					window.location.href=this.userInfo.questionnaireUrl;
 				}else if(e==1){
+          if(this.userInfo.informImgUrl==""){
+            this.isTips('敬请期待！')
+            return
+          }
 					//活动告知
 					var alert={
 						type:1,//1图片2wait
@@ -130,8 +139,16 @@
 					this.isAlertShow(true,alert)
 				}else if(e==2){
 					//楼币红包
+          if(this.userInfo.packageUrl==""){
+            this.isTips('敬请期待！')
+            return
+          }
 					window.location.href=this.userInfo.packageUrl
 				}else if(e==3){
+          if(this.userInfo.pictureActivityId==""){
+            this.isTips('敬请期待！')
+            return
+          }
           this.$router.push('/upload')
 				}
 			},

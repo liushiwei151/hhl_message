@@ -20,7 +20,7 @@
 		</div>
 		<div class="addImg">
 			<ul>
-				<li class='imgLi' v-for="(item, index) in localIdImgs" :key="index" @click="previewImage(item)">
+				<li class='imgLi' v-for="(item, index) in cwlocalIdImgs" :key="index" @click="previewImage(item)">
 					<div v-show="!isSubmission" class='close' @click.stop='delImg(index)'></div>
 					<img :src="item" />
 					</li>
@@ -74,14 +74,14 @@ export default {
 	},
 	computed:{
 		isActive(){
-			if(this.localIdImgs.length>0){
+			if(this.cwlocalIdImgs.length>0){
 				return true
 			}else{
 				return false
 			}
 		},
 		isLi(){
-			if(this.localIdImgs.length>=this.imgNum){
+			if(this.cwlocalIdImgs.length>=this.imgNum){
 				return false
 			}else{
 				return true
@@ -107,7 +107,6 @@ export default {
         return
       }
 			//接口
-      console.log(123)
 			if(this.buttonContent=='提交'){
 				//提交成功
         this.isClick=true;
@@ -177,7 +176,7 @@ export default {
             self.buttonContent = '删除, 重新上传';
             for(let i=0;i<imgUrl.length;i++){
               if(imgUrl[i]!=""){
-                self.localIdImgs.push(imgUrl[i])
+                self.cwlocalIdImgs.push(imgUrl[i])
               }
             }
             self.textarea=res.data.data.remark;
@@ -194,14 +193,14 @@ export default {
 			var self = this;
 			this.wx.previewImage({
 				current: e,
-				urls: self.localIdImgs
+				urls: self.cwlocalIdImgs
 			});
 		},
 		//选择图片
 		add_img(e) {
 			var _this = this;
 			this.wx.chooseImage({
-				count: _this.imgNum-_this.localIdImgs.length, // 默认9
+				count: _this.imgNum-_this.cwlocalIdImgs.length, // 默认9
 				sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
 				sourceType: ['album'], // 可以指定来源是相册还是相机，默认二者都有
 				success: function(res) {
@@ -241,7 +240,7 @@ export default {
 							serverid: res.serverId
 						};
             _this.uploadImg(res.serverId)
-						// _this.serverId.push(serverId);
+						_this.serverId.push(serverId);
 						i++;
 						i < length && upload();
 					}
@@ -280,6 +279,7 @@ export default {
         self.isClick=false;
         self.buttonContent = '提交';
         self.localIdImgs=[];
+        self.cwlocalIdImgs=[];
         self.textarea=""
        }
      })

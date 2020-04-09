@@ -9,9 +9,9 @@ import wx from 'weixin-js-sdk'
 
 Vue.config.productionTip = false
 
-Vue.prototype.$axios = axios    //全局注册，使用方法为:this.$axios
-Vue.prototype.qs = qs
-Vue.prototype.wx=wx
+Vue.prototype.$axios = axios;    //全局注册，使用方法为:this.$axios
+Vue.prototype.qs = qs;
+Vue.prototype.wx=wx;
 
 /* eslint-disable no-new */
 new Vue({

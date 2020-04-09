@@ -3,6 +3,9 @@
     <router-view/>
 	<elastic :imgUrl="alertImgUrl" v-show='isShow' :class='showAnimate' ></elastic>
 	<div class="loading" v-if="isshow"></div>
+  <transition name="fade">
+    <div class='boxs' v-show='tips.isShow'><div class='tips' >{{tips.text}}</div></div>
+  </transition>
   </div>
 </template>
 
@@ -16,7 +19,8 @@ export default {
 	provide(){
 		return{
 			isloadingshow: this.isloadingshow,
-			isAlertShow:this.appAlertShow
+			isAlertShow:this.appAlertShow,
+      isTips:this.isTipsShow
 		}
 	},
 	data(){
@@ -27,6 +31,10 @@ export default {
 				show_in:false,
 				 show_out:false
 			},
+      tips:{
+        isShow:false,
+        text:''
+      },
 			alertImgUrl:''
 		}
 	},
@@ -34,6 +42,16 @@ export default {
 		this.$router.push('/')
 	},
 	methods:{
+    isTipsShow(e){
+      var self =this;
+      self.tips={
+        isShow:true,
+        text:e
+      }
+      setTimeout((res)=>{
+        self.tips.isShow=false
+      },1500)
+    },
 		isloadingshow(e) {
 			this.isshow = e;
 		},
@@ -60,7 +78,13 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+  }
+  .fade-enter, .fade-leave-to{
+    opacity: 0;
+  }
 	.show_in{
 	    animation: go_in 1s;
 	    opacity: 1;
@@ -96,6 +120,31 @@ body{
 	width: 100%;
 	height: 100%;
 }
+.boxs{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  .tips{
+    max-width: 81vw;
+    font-size: 30px;
+    padding:10px 20px;
+    text-align: left;
+    word-break:break-all;
+    color: #fff;
+    background-color: #000;
+    opacity: 0.6;
+    z-index: 100;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    border-radius: 10px;
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=70);
+
+  }
+}
+
 .loading {
 	width: 100%;
 	height: 100%;
@@ -106,7 +155,7 @@ body{
 	background-size: 100px 100px;
 	background-position: center center;
 	opacity: 0.6;
-	z-index: 9999;
+	z-index: 99;
 	-moz-border-radius: 20px;
 	-webkit-border-radius: 20px;
 	border-radius: 20px;

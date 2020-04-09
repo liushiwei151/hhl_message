@@ -1,7 +1,7 @@
 <template>
 	<div class='elastic' @click="close">
-		<div class='img' >
-			<img :src="imgUrl" alt="">
+		<div class='img' :style="{backgroundImage:'url('+imgUrl+')'}">
+			<!-- <img :src="imgUrl" alt=""> -->
 		</div>
 	</div>
 </template>
@@ -37,14 +37,13 @@
 		.img{
 			z-index: 100;
 			box-sizing: border-box;
+      background-size:contain ;
+      background-position: center;
       max-width: 750px;
       max-height: 95vh;
-      img{
-        width: 100%;
-        height: 100%;
-        max-width: 750px;
-        max-height: 95vh;
-      }
+      width: 100%;
+      height: 100%;
+      background-repeat:no-repeat;
 		}
 	}
 </style>
