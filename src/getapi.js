@@ -10,8 +10,10 @@ axios.defaults.withCredentials = true;
 //POST传参序列化(添加请求拦截器)
 axios.interceptors.request.use((config) => {
     //在发送请求之前做某件事
-    if(config.method  === 'post'){
-        // config.data = qs.stringify(config.data);
+    let  token =JSON.parse(localStorage.getItem('userInfo')).user.token;
+    console.log(config,token)
+    if(token){
+      config.headers.token = token;
     }
     return config;
 },(error) =>{
@@ -70,6 +72,9 @@ const addPicture=(data)=>{
 const delPicture=(data)=>{
   return axios.post('/picture/delete/'+data)
 }
+const revoke=(data)=>{
+  return axios.post('/message/revoke/'+data.userId+'/'+data.messageId)
+}
 export default {
 	openHome,
 	market,
@@ -79,5 +84,6 @@ export default {
   getActivityInfo,
   uploadImg,
   addPicture,
-  delPicture
+  delPicture,
+  revoke
 }

@@ -148,9 +148,12 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-body {
+body,ul{
   padding: 0;
   margin: 0;
+}
+ul{
+  list-style-type: none;
 }
 .img > img {
   width: 100%;

@@ -3,7 +3,7 @@
 		<div class='home'>
 			<div class='address' v-show="isActivity">
 				<div class='img'><img :src="img[0]" ></div>
-				<div>当前城市1：{{address}}</div>
+				<div>当前城市：{{address}}</div>
 			</div>
 			<div class='home-body' v-show="isActivity">
 				<div v-for='(item,index) in button' :key='index' class='img' @click="click(index)">
@@ -93,20 +93,19 @@
 							})
 						})
 					}else{
-						alert(res.data.msg)
+						self.isTip(res.data.msg)
 					}
 				})
 			},
 			getMarket(e){
 				api.market(e).then((res)=>{
 					if(res.data.code==200){
-						//todo 缺等待画面，数据不获取就无法点击
 						this.userInfo=res.data.data;
 						localStorage.setItem('userInfo',JSON.stringify(this.userInfo));
 						this.address=res.data.data.user.city;
 						this.isloadingshow(false);
 					}else{
-						alert(res.data.msg)
+						self.isTip(res.data.msg)
 					}
 				})
 			},
