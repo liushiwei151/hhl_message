@@ -11,7 +11,6 @@ axios.defaults.withCredentials = true;
 axios.interceptors.request.use((config) => {
     //在发送请求之前做某件事
     let  token =JSON.parse(localStorage.getItem('userInfo')).user.token;
-    console.log(config,token)
     if(token){
       config.headers.token = token;
     }

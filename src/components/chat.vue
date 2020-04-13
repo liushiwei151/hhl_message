@@ -2,7 +2,7 @@
   <div class="chat">
     <div class="header">
       <div class="img" @click="gotoWeb('/')"><img :src="img[0]" alt="" /></div>
-      <div>楼楼</div>
+      <div>楼楼测试</div>
       <div class="img"><img :src="img[1]" alt="" /></div>
     </div>
     <div class="body" @click="closePress">
@@ -33,7 +33,7 @@
       <div class="sendOut" @click="sendOut">发送</div>
     </div>
     <ul class="press" :style="{ left: popupAdress.left, top: popupAdress.top }" v-show="popup.isShow">
-      <li v-for="(item, index) in popup.data" class="pressCopy" :data-clipboard-text="copyText" @click="pressClick(item)">{{ item }}</li>
+      <li v-for="(item, index) in popup.data" :key='item' class="pressCopy" :data-clipboard-text="copyText" @click="pressClick(item)">{{ item }}</li>
     </ul>
   </div>
 </template>
@@ -48,16 +48,7 @@ export default {
       text: '',
       charData: [
         {
-          content: '您好，欢迎留言。',
-          img: 'https://wxfile.hhl1916.com/wx/1/headimg/5d6bb2dae5654addbddb8d356826004b.jpg',
-          isTime: true,
-          nickName: '楼楼',
-          time: '星期三 13:03',
-          type: 1,
-          userId: 'admin'
-        },
-        {
-          content: '您好，欢迎留言。',
+          content: '您好，欢迎留言123。',
           img: 'https://wxfile.hhl1916.com/wx/1/headimg/5d6bb2dae5654addbddb8d356826004b.jpg',
           isTime: true,
           nickName: '楼楼',
@@ -65,15 +56,6 @@ export default {
           type: 2,
           userId: 'admin'
         },
-        {
-          content: '9999123',
-          img: 'https://wxfile.hhl1916.com/wx/1/headimg/5d6bb2dae5654addbddb8d356826004b.jpg',
-          isTime: true,
-          nickName: '楼楼',
-          time: '星期三 13:03',
-          type: 2,
-          userId: 'admin'
-        }
       ],
       screenHeight: '',
       //客户留言和id
@@ -115,7 +97,7 @@ export default {
     pressClick(e) {
       if (e == '复制') {
         this.copy();
-      } else if (e == '撤销') {
+      } else if (e == '撤回') {
         this.delChat()
       }
     },
@@ -129,10 +111,12 @@ export default {
       }
       api.revoke(data).then((res)=>{
         if(res.data.code==200){
-          self.charData.splice(self.longTapContent[1],1)
+          self.charData.splice(self.longTapContent[1],1);
+		  self.isTips('撤销成功');
         }else{
           self.isTips(res.data.msg)
         }
+		self.closePress();
       })
     },
     //复制
@@ -141,7 +125,7 @@ export default {
       var clipboard = new this.clipboard('.pressCopy');
       clipboard.on('success', function(e) {
         self.isTips('复制成功');
-        console.log(e)
+       console.log(self.copyText)
         e.clearSelection();
          clipboard.destroy();
       });
@@ -166,6 +150,7 @@ export default {
           top: e.bottom - e.height / 3 + 'px'
         };
         self.copyText = f;
+		console.log(self.copyText)
       };
     },
     pressRight(f,g) {
@@ -180,6 +165,7 @@ export default {
           top: e.bottom - e.height / 3 + 'px'
         };
         self.copyText = f.content;
+		console.log(self.copyText)
         self.longTapContent=[f,g];
       };
     },
