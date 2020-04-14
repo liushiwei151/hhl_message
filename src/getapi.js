@@ -10,8 +10,8 @@ axios.defaults.withCredentials = true;
 //POST传参序列化(添加请求拦截器)
 axios.interceptors.request.use((config) => {
     //在发送请求之前做某件事
-    let  token =JSON.parse(localStorage.getItem('userInfo')).user.token;
-    if(token){
+    if(JSON.parse(localStorage.getItem('userInfo'))){
+      let  token =JSON.parse(localStorage.getItem('userInfo')).user.token;
       config.headers.token = token;
     }
     return config;

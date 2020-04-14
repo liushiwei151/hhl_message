@@ -3,7 +3,7 @@
 	<div class='home'>
 		<div class='address' v-show="isHave===true">
 			<div class='img'><img :src="img[0]"></div>
-			<div>当前城市：{{address}}</div>
+			<div>当前城市：{{userInfo.user.city}}</div>
 		</div>
 		<div class='home-body' v-show="isHave===true">
 			<div v-for='(item,index) in button' :key='index' class='img' @click="click(index)">
@@ -18,7 +18,7 @@
 		<div class='noActivity' v-show="isHave===false">
 			敬请期待！
 		</div>
-		<iframe v-show='iframeData.isShow' class='iframe' :src="iframeData.url" frameborder="0"></iframe>
+		<!-- <iframe v-show='iframeData.isShow' class='iframe' :src="iframeData.url" frameborder="0"></iframe> -->
 	</div>
 	<!-- </div> -->
 </template>
@@ -36,14 +36,17 @@
 					informImgUrl: "",
 					packageUrl: "",
 					questionnaireUrl: '',
-					pictureActivityId: ''
+					pictureActivityId: '',
+          user:{
+            city:""
+          }
 				},
 				//初始传值
 				initData: [],
-				iframeData: {
-					isShow: false,
-					url: ''
-				}
+				// iframeData: {
+				// 	isShow: false,
+				// 	url: ''
+				// }
 			}
 		},
 		computed: {
@@ -98,19 +101,20 @@
 							})
 						})
 					} else {
-						self.isTip(res.data.msg)
+						self.isTips(res.data.msg)
 					}
 				})
 			},
 			getMarket(e) {
+        var self =this;
 				api.market(e).then((res) => {
 					if (res.data.code == 200) {
-						this.userInfo = res.data.data;
-						localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
-						this.isHave = res.data.data.isHave;
-						this.isloadingshow(false);
+						self.userInfo = res.data.data;
+						localStorage.setItem('userInfo', JSON.stringify(self.userInfo));
+						self.isHave = res.data.data.isHave;
+						self.isloadingshow(false);
 					} else {
-						self.isTip(res.data.msg)
+						self.isTips(res.data.msg)
 					}
 				})
 			},
@@ -122,11 +126,11 @@
 						this.isTips('敬请期待！');
 						return
 					}
-					this.iframeData = {
-						isShow: true,
-						url: this.userInfo.questionnaireUrl
-					}
-					// window.location.href=this.userInfo.questionnaireUrl;
+					// this.iframeData = {
+					// 	isShow: true,
+					// 	url: this.userInfo.questionnaireUrl
+					// }
+					window.location.href=this.userInfo.questionnaireUrl;
 				} else if (e == 1) {
 					if (this.userInfo.informImgUrl == "") {
 						this.isTips('敬请期待！')
@@ -135,8 +139,8 @@
 					this.$router.push({
 						path: '/actImg',
 						query: {
-							// imgUrl: this.userInfo.informImgUrl,
-							imgUrl:"./static/button3.png"
+							imgUrl: this.userInfo.informImgUrl,
+							// imgUrl:"./static/button3.png"
 						}
 					})
 					//活动告知

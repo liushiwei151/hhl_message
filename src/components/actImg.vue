@@ -2,6 +2,7 @@
 	<div class='actImg'>
 		<div class='img' :style="{backgroundImage:'url('+actImgUrl+')'}">
 		</div>
+    <div class='backHome' @click="backHome"></div>
 	</div>
 </template>
 
@@ -15,11 +16,26 @@
 		},
 		created() {
 			this.actImgUrl = this.$route.query.imgUrl
-		}
+		},
+    methods:{
+      backHome(){
+        this.$router.push('/')
+      }
+    }
 	}
 </script>
 
 <style scoped>
+  .backHome{
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    width: 86px;
+    height: 86px;
+    background: url('../../static/back.png') no-repeat;
+    background-size: 100% 100%;
+    z-index: 100;
+  }
 	.actImg {
 		position: fixed;
 		width: 100%;

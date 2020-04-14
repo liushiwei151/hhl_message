@@ -1,10 +1,11 @@
 <template>
   <div class="chat">
-    <div class="header">
+    <!-- <div class="header">
       <div class="img" @click="gotoWeb('/')"><img :src="img[0]" alt="" /></div>
       <div>楼楼测试</div>
       <div class="img"><img :src="img[1]" alt="" /></div>
-    </div>
+    </div> -->
+    <div class='backHome' @click="backHome"></div>
     <div class="body" @click="closePress">
       <div class="chat-box" v-for="(item, index) in charData" :key="index">
         <div v-if="item.isTime">
@@ -53,7 +54,7 @@ export default {
           isTime: true,
           nickName: '楼楼',
           time: '星期三 13:03',
-          type: 2,
+          type: 1,
           userId: 'admin'
         },
       ],
@@ -90,6 +91,9 @@ export default {
     }
   },
   methods: {
+    backHome(){
+      this.$router.push('/')
+    },
     //隐藏功能框
     closePress() {
       this.popup.isShow = false;
@@ -97,7 +101,7 @@ export default {
     pressClick(e) {
       if (e == '复制') {
         this.copy();
-      } else if (e == '撤回') {
+      } else if (e == '撤销') {
         this.delChat()
       }
     },
@@ -272,6 +276,15 @@ export default {
 </script>
 
 <style scoped lang="less">
+  .backHome{
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    width: 86px;
+    height: 86px;
+    background: url('../../static/back.png') no-repeat;
+    background-size: 100% 100%;
+  }
 //长按后的弹出框
 .press {
   background-color: #fff;
@@ -379,7 +392,7 @@ export default {
 
 .body {
   height: 100%;
-  padding-top: 88px;
+  padding-top: 86px;
   padding-bottom: 96px;
   box-sizing: border-box;
   background-color: rgb(246, 240, 229);
