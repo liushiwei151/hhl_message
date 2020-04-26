@@ -8,7 +8,11 @@ import qs from 'qs'
 import wx from 'weixin-js-sdk'
 import {myCustom} from './common/custom.js'
 import clipboard from 'clipboard';
+import vueHashCalendar from 'vue-hash-calendar'
+import 'vue-hash-calendar/lib/vue-hash-calendar.css'
 
+
+Vue.use(vueHashCalendar)
 Vue.use(myCustom);
 
 Vue.config.productionTip = false

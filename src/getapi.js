@@ -2,9 +2,9 @@ import axios from 'axios'
 import qs from 'qs'
 // axios.defaults.timeout = 3000; //响应时间
 //测试
- // axios.defaults.baseURL = 'http://qrhhl.yunyutian.cn/huanghelou1916-market/market';   //配置接口地址
+ axios.defaults.baseURL = 'http://qrhhl.yunyutian.cn/huanghelou1916-market/market';   //配置接口地址
  //正式
- axios.defaults.baseURL = 'https://qr.hhl1916.com/huanghelou1916-market/market';   //配置接口地址
+ // axios.defaults.baseURL = 'https://qr.hhl1916.com/huanghelou1916-market/market';   //配置接口地址
 axios.defaults.withCredentials = true;
 
 //POST传参序列化(添加请求拦截器)
@@ -33,7 +33,7 @@ const openHome=()=>{
 	return axios.get('/index/info/oXslc08kYzfJOxRnOpnCQR4EYULU/0/0')
 }
 const market=(data)=>{
-	return axios.get('/index/info/'+data.openid+'/'+data.latitude+'/'+data.longitude)
+	return axios.get('/index/info/'+data.openid+'/'+data.customerId+'/'+data.latitude+'/'+data.longitude)
 }
 //获取wxsjdk权限
 const getJsSign=(data)=>{
@@ -57,6 +57,9 @@ const send=(data)=>{
 }
 //获取用户是否参加活动是否有图片
 const getActivityInfo=(data)=>{
+  if(data.pictureWorksId&&data.pictureWorksId!=''){
+    return axios.get('/picture/getActivityInfo/'+data.pictureActivityId+'/'+data.userId+'/'+data.pictureWorksId)
+  }
   return axios.get('/picture/getActivityInfo/'+data.pictureActivityId+'/'+data.userId)
 }
 //上传图片
@@ -74,6 +77,18 @@ const delPicture=(data)=>{
 const revoke=(data)=>{
   return axios.post('/message/revoke/'+data.userId+'/'+data.messageId)
 }
+//提交审核信息
+const edit=(data)=>{
+  return axios.post('/index/edit',data,{
+		headers: {
+		      'Content-Type': 'application/json',
+		    }
+	})
+}
+//获取历史日期
+const getHistory=(data)=>{
+  return axios.get('/picture/history/'+data)
+}
 export default {
 	openHome,
 	market,
@@ -84,5 +99,7 @@ export default {
   uploadImg,
   addPicture,
   delPicture,
-  revoke
+  revoke,
+  edit,
+  getHistory
 }

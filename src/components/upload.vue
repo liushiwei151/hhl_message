@@ -37,6 +37,9 @@
       <div>仅在审核中可重新上传。</div>
     </div>
     <div class="backHome" @click="backHome"></div>
+    <div class='isCalendar' @click="isCalendar"></div>
+    <!-- 日期组件 -->
+      <vue-hash-calendar @confirm='sureTime' :markDate='markDate' model='dialog' :disabled-date="disabledDate" :scrollChangeDate='false'  :visible.sync="isShowCalendar" :showTodayButton='false' pickerType='date'></vue-hash-calendar>
   </div>
 </template>
 
@@ -68,7 +71,12 @@ export default {
       //是否点击
       isClick: false,
       //上传图片中不允许点击
-      isUpload: true
+      isUpload: true,
+      isShowCalendar:false,
+      markDate:[{color: 'red',date: []}],
+      timeArray:[],
+      //存储的历史日期和id
+      historyTime:[]
     };
   },
   computed: {
@@ -87,11 +95,61 @@ export default {
       }
     }
   },
-  inject: ['isloadingshow'],
+  inject: ['isloadingshow','isTips'],
   created() {
     this.slice(location.href);
   },
   methods: {
+    sureTime(date){
+      // this.getActivityInfo();
+      var time =date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+      if(this.timeArray.length!=0){
+        for(let i =0;i<this.timeArray.length;i++){
+          if(this.timeArray[i].time==time){
+            this.getActivityInfo(this.timeArray[i].id);
+          }
+        }
+      }
+      console.log(time)
+    },
+    //加0
+    add0(e){
+      if(e-0>0&&e-0<10){
+        return '0'+e
+      }
+      return e
+    },
+    //日期禁用
+    disabledDate(date){
+      var time =date.getFullYear()+'-'+this.add0(date.getMonth()+1)+'-'+this.add0(date.getDate());
+      for(let i =0;i<this.timeArray.length;i++){
+        if(time==this.timeArray[i].time){
+          return false;
+        }
+      }
+      return true
+    },
+    // 显示日历
+    isCalendar(){
+      var self =this;
+      self.isloadingshow(true);
+      let data=JSON.parse(localStorage.getItem('userInfo')).user.userId;
+      api.getHistory(data).then(res=>{
+        if(res.data.code==200){
+          self.isloadingshow(false);
+          self.timeArray=res.data.data.all.map((res)=>{
+            return {
+              time:res.insertTime,
+              id:res.pictureWorksId
+            }
+          });
+          self.markDate.date=res.data.data.unCheck.map((res)=>{
+            return res.insertTime
+          });
+          self.isShowCalendar=!self.isShowCalendar;
+        }
+      })
+    },
     backHome() {
       this.$router.push('/');
     },
@@ -153,18 +211,26 @@ export default {
             self.getActivityInfo();
           });
         } else {
-          alert(res.data.msg);
+          self.isTips(res.data.msg);
         }
       });
     },
     //获取用户活动状态
-    getActivityInfo() {
+    getActivityInfo(e) {
       var self = this;
       var useInfo = JSON.parse(localStorage.getItem('userInfo'));
-      var data = {
-        pictureActivityId: useInfo.pictureActivityId,
-        userId: useInfo.user.userId
-      };
+      if(e){
+        var data={
+          pictureActivityId: useInfo.pictureActivityId,
+          userId: useInfo.user.userId,
+          pictureWorksId:e
+        }
+      }else{
+        var data = {
+          pictureActivityId: useInfo.pictureActivityId,
+          userId: useInfo.user.userId
+        };
+      }
       api.getActivityInfo(data).then(res => {
         if (res.data.code == 200) {
           self.isloadingshow(false);
@@ -185,7 +251,7 @@ export default {
             self.pictureWorksId = res.data.data.pictureWorksId;
           }
         } else {
-          alert(res.data.msg);
+          self.isTips(res.data.msg);
         }
       });
     },
@@ -235,7 +301,6 @@ export default {
           localId: loacId, // 需要上传的图片的本地ID，由chooseImage接口获得
           isShowProgressTips: 1, // 默认为1，显示进度提示
           success: function(res) {
-            //    alert(res.serverId);
             var serverId = {
               id: '',
               serverid: res.serverId
@@ -295,7 +360,7 @@ export default {
           }
           self.isUpload = true;
         } else {
-          alert('图片上传失败');
+          self.isTips('图片上传失败');
         }
       });
     },
@@ -322,7 +387,22 @@ export default {
 };
 </script>
 
+
 <style scoped lang="less">
+  .rili{
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+  }
+  .isCalendar{
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    width: 70px;
+    height: 70px;
+    background: url('../../static/rili.png') no-repeat;
+    background-size: 100% 100%;
+  }
 .backHome {
   position: fixed;
   left: 10px;
@@ -420,6 +500,7 @@ ul {
 }
 .dayNum {
   padding: 20px;
+  padding-right: 100px;
   display: flex;
   justify-content: flex-end;
   border-bottom: solid 2px #ccc;

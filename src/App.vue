@@ -2,17 +2,19 @@
   <div id="app">
     <router-view />
     <elastic :imgUrl="alertImgUrl" v-show="isShow" :class="showAnimate"></elastic>
-    <div class="loading" v-if="isshow"></div>
+    <div class="mask loadding" v-if="isshow"></div>
     <transition name="fade">
       <div class="boxs" v-show="tips.isShow">
         <div class="tips">{{ tips.text }}</div>
       </div>
     </transition>
+
   </div>
 </template>
 
 <script>
 import elastic from './components/alert.vue';
+import api from './getapi.js';
 export default {
   name: 'App',
   components: {
@@ -37,7 +39,8 @@ export default {
         isShow: false,
         text: ''
       },
-      alertImgUrl: ''
+      alertImgUrl: '',
+
     };
   },
   created() {
@@ -45,8 +48,9 @@ export default {
     this.prohibitFontSize();
   },
   methods: {
+
     //wx禁止调整字体大小
-    prohibitFontSize(){
+    prohibitFontSize() {
       if (typeof WeixinJSBridge == 'object' && typeof WeixinJSBridge.invoke == 'function') {
         handleFontSize();
       } else {
@@ -58,7 +62,7 @@ export default {
           document.attachEvent('onWeixinJSBridgeReady', handleFontSize);
         }
       }
-      var handleFontSize = function () {
+      var handleFontSize = function() {
         // 设置网页字体为默认大小
         WeixinJSBridge.invoke('setFontSizeCallback', {
           fontSize: 0
@@ -70,7 +74,7 @@ export default {
             fontSize: 0
           });
         });
-      }
+      };
     },
     isTipsShow(e) {
       var self = this;
@@ -109,6 +113,7 @@ export default {
 </script>
 
 <style lang="less">
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
@@ -148,11 +153,12 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-body,ul{
+body,
+ul {
   padding: 0;
   margin: 0;
 }
-ul{
+ul {
   list-style-type: none;
 }
 .img > img {
@@ -160,6 +166,7 @@ ul{
   height: 100%;
 }
 .boxs {
+  z-index: 100;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -182,17 +189,18 @@ ul{
     filter: progid:DXImageTransform.Microsoft.Alpha(opacity=70);
   }
 }
-
-.loading {
+.loadding {
+  background: url(../static/loading.gif) no-repeat;
+  color: #fff;
+}
+.mask {
   width: 100%;
   height: 100%;
   position: fixed;
   top: 0;
-  color: #fff;
-  background: #000 url(../static/loading.gif) no-repeat;
+  background-color: rgba(0, 0, 0, 0.6);
   background-size: 100px 100px;
   background-position: center center;
-  opacity: 0.6;
   z-index: 99;
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;

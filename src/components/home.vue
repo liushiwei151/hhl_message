@@ -18,7 +18,35 @@
 		<div class='noActivity' v-show="isHave===false">
 			敬请期待！
 		</div>
-		<!-- <iframe v-show='iframeData.isShow' class='iframe' :src="iframeData.url" frameborder="0"></iframe> -->
+    <!-- 客户信息是否审核 -->
+    <div class="isPass mask" v-if='status!=2'>
+      <!-- 填消息 0-->
+      <div class="addInfo" v-if="status == 0">
+        <div>
+          <label for="userNum">用户编号 :</label>
+          <input type="text" id="userNum" v-model="passInfo.inputMemberNo" />
+        </div>
+        <div>
+          <label for="userName">姓名 :</label>
+          <input type="text" id="userName" v-model="passInfo.realName" />
+        </div>
+        <div>
+          <label for="addresName">店名 :</label>
+          <input type="text" id="addresName" v-model="passInfo.storeName" />
+        </div>
+        <div>
+          <label for="addresNum">专卖证号 :</label>
+          <input type="text" id="addresNum" v-model="passInfo.monopolyNo" />
+        </div>
+        <div><i @click="inPass"></i></div>
+      </div>
+      <!-- 审核中 1-->
+      <div v-if="status == 1"><div class="passing"></div></div>
+      <!-- 审核未通过-1 -->
+      <div v-if="status == -1">
+        <div class="noPass"><div class="review" @click='rewview'></div></div>
+      </div>
+    </div>
 	</div>
 	<!-- </div> -->
 </template>
@@ -43,21 +71,18 @@
 				},
 				//初始传值
 				initData: [],
-				// iframeData: {
-				// 	isShow: false,
-				// 	url: ''
-				// }
+        //当前客户状态
+        status: 2,
+        passInfo: {
+          realName: '',
+          storeName: '',
+          monopolyNo: '',
+          inputMemberNo: '',
+          userId:''
+        }
 			}
 		},
 		computed: {
-			//是否有活动
-			// isActivity(){
-			// 	if(this.isHave){
-			// 		return 1
-			// 	}else{
-			// 		return -1
-			// 	}
-			// }
 		},
 		inject: ['isAlertShow', 'isloadingshow', 'isTips'],
 		created() {
@@ -65,6 +90,30 @@
 			this.slice(location.href);
 		},
 		methods: {
+      //重新上传用户信息
+      rewview(){
+        this.status=0;
+      },
+      //调取上传用户信息的接口
+      setEdit(data) {
+        var self=this;
+        api.edit(data).then(res => {
+          if (res.data.code == 200) {
+            self.status=1;
+          } else {
+            this.isTips(res.data.msg);
+          }
+        });
+      },
+      // 提交
+      inPass() {
+        if (this.passInfo.realName == '' || this.passInfo.storeName == '' || this.passInfo.monopolyNo == '' || this.passInfo.inputMemberNo == '') {
+          this.isTips('信息不能为空！');
+          return
+        }
+        this.passInfo.userId=this.userInfo.user.userId;
+        this.setEdit(this.passInfo);
+      },
 			//截取url
 			slice(url) {
 				for (let i = 0; i < url.slice(44, -2).split('&').length; i++) {
@@ -93,6 +142,7 @@
 								success: function(res) {
 									let data = {
 										openid: self.initData[0],
+                    customerId:self.initData[1],
 										latitude: res.latitude || 0,
 										longitude: res.longitude || 0
 									}
@@ -110,6 +160,7 @@
 				api.market(e).then((res) => {
 					if (res.data.code == 200) {
 						self.userInfo = res.data.data;
+            self.status=res.data.data.user.status;
 						localStorage.setItem('userInfo', JSON.stringify(self.userInfo));
 						self.isHave = res.data.data.isHave;
 						self.isloadingshow(false);
@@ -126,10 +177,6 @@
 						this.isTips('敬请期待！');
 						return
 					}
-					// this.iframeData = {
-					// 	isShow: true,
-					// 	url: this.userInfo.questionnaireUrl
-					// }
 					window.location.href=this.userInfo.questionnaireUrl;
 				} else if (e == 1) {
 					if (this.userInfo.informImgUrl == "") {
@@ -174,6 +221,71 @@
 </script>
 
 <style scoped lang="less">
+  .isPass {
+    .noPass {
+      background: url(../../static/noPass.png) no-repeat;
+      background-size: 100% 100%;
+      width: 620px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      height: 53.15vh;
+      padding-bottom: 7vh;
+      box-sizing: border-box;
+      .review {
+        background: url(../../static/review.png) no-repeat;
+        background-size: 100% 100%;
+        width: 367px;
+        height: 7.1vh;
+      }
+    }
+    .passing {
+      background: url(../../static/passing.png) no-repeat;
+      background-size: 100% 100%;
+      width: 620px;
+      height: 53.15vh;
+    }
+    .addInfo {
+      div {
+        padding: 0 80px;
+        box-sizing: border-box;
+      }
+      div:last-of-type {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        i {
+          display: block;
+          background: url(../../static/sure.png) no-repeat;
+          width: 367px;
+          height: 7.1vh;
+          background-size: 100% 100%;
+        }
+      }
+      padding-top: 10vh;
+      box-sizing: border-box;
+      background: url(../../static/infoBg.png) no-repeat;
+      background-size: 100% 100%;
+      width: 633px;
+      height: 76.162vh;
+      color: black;
+      font-size: 35px;
+      input {
+        border: none;
+        width: 100%;
+        border: solid 1px rgb(208, 159, 111);
+        height: 7vh;
+        line-height: 7vh;
+        font-size: 4vh;
+        margin-bottom: 0.5vh;
+      }
+      label {
+        display: block;
+        text-align: left;
+        padding: 1vh 0;
+      }
+    }
+  }
 	.iframe {
 		width: 100%;
 		height: 100%;
