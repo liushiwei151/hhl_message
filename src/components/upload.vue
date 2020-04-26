@@ -102,7 +102,7 @@ export default {
   methods: {
     sureTime(date){
       // this.getActivityInfo();
-      var time =date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+      var time =date.getFullYear()+'-'+this.add0(date.getMonth()+1)+'-'+this.add0(date.getDate());
       if(this.timeArray.length!=0){
         for(let i =0;i<this.timeArray.length;i++){
           if(this.timeArray[i].time==time){
