@@ -100,8 +100,8 @@ export default {
     this.slice(location.href);
   },
   methods: {
+    //确认时间
     sureTime(date){
-      // this.getActivityInfo();
       var time =date.getFullYear()+'-'+this.add0(date.getMonth()+1)+'-'+this.add0(date.getDate());
       if(this.timeArray.length!=0){
         for(let i =0;i<this.timeArray.length;i++){
@@ -143,9 +143,10 @@ export default {
               id:res.pictureWorksId
             }
           });
-          self.markDate.date=res.data.data.unCheck.map((res)=>{
+          self.markDate[0].date=res.data.data.unCheck.map((res)=>{
             return res.insertTime
           });
+          console.log(self.markDate)
           self.isShowCalendar=!self.isShowCalendar;
         }
       })
@@ -241,6 +242,7 @@ export default {
           } else {
             var imgUrl = [res.data.data.img1Url, res.data.data.img2Url, res.data.data.img3Url];
             self.buttonContent = '删除, 重新上传';
+            self.cwlocalIdImgs=[];
             for (let i = 0; i < imgUrl.length; i++) {
               if (imgUrl[i] != '') {
                 self.cwlocalIdImgs.push(imgUrl[i]);
