@@ -2,7 +2,7 @@
   <div id="app">
     <router-view />
     <elastic :imgUrl="alertImgUrl" v-show="isShow" :class="showAnimate"></elastic>
-    <div class="mask loadding" v-if="isshow"></div>
+    <!-- <div class="mask loadding" v-if="isshow"></div> -->
     <transition name="fade">
       <div class="boxs" v-show="tips.isShow">
         <div class="tips">{{ tips.text }}</div>
@@ -191,6 +191,7 @@ ul {
 }
 .loadding {
   background: url(../static/loading.gif) no-repeat;
+  background-size: 60px 60px;
   color: #fff;
 }
 .mask {
@@ -199,12 +200,8 @@ ul {
   position: fixed;
   top: 0;
   background-color: rgba(0, 0, 0, 0.6);
-  background-size: 100px 100px;
   background-position: center center;
   z-index: 99;
-  -moz-border-radius: 20px;
-  -webkit-border-radius: 20px;
-  border-radius: 20px;
   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=70);
   display: flex;
   justify-content: center;

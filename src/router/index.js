@@ -4,6 +4,7 @@ import home from '@/components/home'
 import chat from '@/components/chat'
 import upload from '@/components/upload'
 import actImg from '@/components/actImg'
+import administration from '@/components/redEnvelopes/administration'
 
 Vue.use(Router)
 
@@ -27,6 +28,11 @@ export default new Router({
 			name: 'actImg',
 			component: actImg
 
-		}
+		},
+    {
+      path:'/administration',
+      name:'administration',
+      component:administration
+    }
 	]
 })

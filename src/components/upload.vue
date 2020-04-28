@@ -24,17 +24,20 @@
         </li>
         <li class="add" @click="add_img" v-show="!isSubmission && isLi"></li>
       </ul>
+      <div class='addimgText' v-show="isSubmission">
+        {{textarea}}
+      </div>
     </div>
     <div class="textarea" v-show="!isSubmission">
       <textarea class="textarea_style" rows="7" placeholder="说点什么吧......" maxlength="150" v-model="textarea"></textarea>
       <div>{{ textarea.length }}/150</div>
     </div>
     <div class="tijiao">
-      <div v-show="status == 0" @click="Submission" :class="{ active: !isActive, active2: isClick }">{{ buttonContent }}</div>
+      <div v-show="status == 0||status == -1" @click="Submission" :class="{ active: !isActive, active2: isClick }">{{ buttonContent }}</div>
     </div>
     <div class="textbottom" v-show="isSubmission">
       <div class="gth">!</div>
-      <div>仅在审核中可重新上传。</div>
+      <div>上传后日期数字为黑色，若有红点即代表当日照片审核未通过。</div>
     </div>
     <div class="backHome" @click="backHome"></div>
     <div class='isCalendar' @click="isCalendar"></div>
@@ -61,7 +64,7 @@ export default {
       textarea: '',
       buttonContent: '提交',
       //是否提交
-      isSubmission: false,
+      isSubmission: false,//
       //可上传的图片数量
       imgNum: 3,
       //图片组id
@@ -148,6 +151,8 @@ export default {
           });
           console.log(self.markDate)
           self.isShowCalendar=!self.isShowCalendar;
+        }else{
+          self.isTips(res.data.msg)
         }
       })
     },
@@ -174,7 +179,7 @@ export default {
         this.addPicture();
       } else {
         //取消提交
-        if (this.status == 0) {
+        if (this.status == 0||this.status==-1) {
           this.delPicture();
         } else {
           return;
@@ -320,20 +325,34 @@ export default {
     addPicture() {
       var self = this;
       var useInfo = JSON.parse(localStorage.getItem('userInfo'));
-      var data = {
-        pictureActivityId: useInfo.pictureActivityId,
-        userId: useInfo.user.userId,
-        img1Url: this.cwlocalIdImgs[0],
-        img2Url: this.cwlocalIdImgs[1],
-        img3Url: this.cwlocalIdImgs[2],
-        remark: this.textarea
-      };
+      if(self.pictureWorksId!=''){
+        var data={
+          pictureActivityId: useInfo.pictureActivityId,
+          userId: useInfo.user.userId,
+          img1Url: this.cwlocalIdImgs[0],
+          img2Url: this.cwlocalIdImgs[1],
+          img3Url: this.cwlocalIdImgs[2],
+          remark: this.textarea,
+          pictureWorksId:self.pictureWorksId
+        }
+      }else{
+        var data = {
+          pictureActivityId: useInfo.pictureActivityId,
+          userId: useInfo.user.userId,
+          img1Url: this.cwlocalIdImgs[0],
+          img2Url: this.cwlocalIdImgs[1],
+          img3Url: this.cwlocalIdImgs[2],
+          remark: this.textarea
+        };
+      }
       api.addPicture(data).then(res => {
         if (res.data.code == 200) {
           self.pictureWorksId = res.data.data;
           self.isClick = false;
           self.isSubmission = true;
           self.buttonContent = '删除, 重新上传';
+        }else{
+          self.isTips(res.data.msg)
         }
       });
     },
@@ -341,16 +360,17 @@ export default {
     delPicture() {
       var self = this;
       self.isClick = true;
-      api.delPicture(this.pictureWorksId).then(res => {
-        if (res.data.code == 200) {
-          self.isSubmission = false;
-          self.isClick = false;
-          self.buttonContent = '提交';
-          self.localIdImgs = [];
-          self.cwlocalIdImgs = [];
-          self.textarea = '';
-        }
-      });
+      self.isSubmission = false;
+      self.isClick = false;
+      self.buttonContent = '提交';
+      self.localIdImgs = [];
+      self.cwlocalIdImgs = [];
+      self.textarea = '';
+      // api.delPicture(this.pictureWorksId).then(res => {
+      //   if (res.data.code == 200) {
+
+      //   }
+      // });
     },
     //上传图片
     uploadImg(e) {
@@ -449,8 +469,10 @@ ul {
   justify-content: flex-start;
   align-items: center;
   color: gray;
-  font-size: 25px;
+  font-size: 22px;
   padding: 0 20px;
+  white-space: nowrap;
+  text-align: left;
   .gth {
     border: solid 3px red;
     border-radius: 50%;
@@ -539,6 +561,10 @@ ul {
 .addImg {
   background-color: #fafafa;
   padding-top: 20px;
+  .addimgText{
+    text-align: left;
+        padding: 0 20px;
+  }
   .imgLi {
     position: relative;
     .close {

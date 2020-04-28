@@ -1,6 +1,6 @@
 <template>
 	<!-- <div class='box'> -->
-	<div class='home'>
+	<div class='home' :style="{height:guding+'px'}">
 		<div class='address' v-show="isHave===true">
 			<div class='img'><img :src="img[0]"></div>
 			<div>当前城市：{{userInfo.user.city}}</div>
@@ -19,26 +19,26 @@
 			敬请期待！
 		</div>
     <!-- 客户信息是否审核 -->
-    <div class="isPass mask" v-if='status!=2'>
+    <div class="isPass mask" v-if='status!=2' >
       <!-- 填消息 0-->
-      <div class="addInfo" v-if="status == 0">
+      <div class="addInfo" v-if="status == 0" :style="{height:guding*0.76+'px',fontSize:guding*0.03+'px',paddingTop:guding*0.1+'px'}">
         <div>
           <label for="userNum">用户编号 :</label>
-          <input type="text" id="userNum" v-model="passInfo.inputMemberNo" />
+          <input  type="text" id="userNum" v-model="passInfo.inputMemberNo" :style="{height:guding*0.05+'px'}"/>
         </div>
         <div>
           <label for="userName">姓名 :</label>
-          <input type="text" id="userName" v-model="passInfo.realName" />
+          <input  type="text" id="userName" v-model="passInfo.realName" :style="{height:guding*0.06+'px'}"/>
         </div>
         <div>
           <label for="addresName">店名 :</label>
-          <input type="text" id="addresName" v-model="passInfo.storeName" />
+          <input  type="text" id="addresName" v-model="passInfo.storeName" :style="{height:guding*0.06+'px'}"/>
         </div>
         <div>
           <label for="addresNum">专卖证号 :</label>
-          <input type="text" id="addresNum" v-model="passInfo.monopolyNo" />
+          <input  type="text" id="addresNum" v-model="passInfo.monopolyNo" :style="{height:guding*0.06+'px'}"/>
         </div>
-        <div><i @click="inPass"></i></div>
+        <div><i @click="inPass" :style="{height:guding*0.07+'px'}"></i></div>
       </div>
       <!-- 审核中 1-->
       <div v-if="status == 1"><div class="passing"></div></div>
@@ -46,6 +46,10 @@
       <div v-if="status == -1">
         <div class="noPass"><div class="review" @click='rewview'></div></div>
       </div>
+    </div>
+    <!-- 红包管理 -->
+    <div class='envelopes' v-if='userInfo.isRedPacketAdmin' @click="gotoWeb('administration')">
+
     </div>
 	</div>
 	<!-- </div> -->
@@ -79,13 +83,14 @@
           monopolyNo: '',
           inputMemberNo: '',
           userId:''
-        }
+        },
+        guding:0,
 			}
-		},
-		computed: {
 		},
 		inject: ['isAlertShow', 'isloadingshow', 'isTips'],
 		created() {
+      this.guding= document.documentElement.clientHeight;
+      console.log(this.guding)
 			this.isloadingshow(true);
 			this.slice(location.href);
 		},
@@ -221,7 +226,19 @@
 </script>
 
 <style scoped lang="less">
+  //红包图标
+  .envelopes{
+    background: url(../../static/redPackage.gif) no-repeat;
+    background-size: 100% 100%;
+    width: 114px;
+    height: 10vh;
+    position: fixed;
+    right: 100px;
+    bottom: 10vh;
+  }
   .isPass {
+    overflow: hidden;
+    overflow-y: auto;
     .noPass {
       background: url(../../static/noPass.png) no-repeat;
       background-size: 100% 100%;
@@ -254,35 +271,30 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        margin-top: 20px;
         i {
           display: block;
           background: url(../../static/sure.png) no-repeat;
           width: 367px;
-          height: 7.1vh;
           background-size: 100% 100%;
         }
       }
-      padding-top: 10vh;
       box-sizing: border-box;
       background: url(../../static/infoBg.png) no-repeat;
       background-size: 100% 100%;
       width: 633px;
-      height: 76.162vh;
       color: black;
       font-size: 35px;
       input {
         border: none;
         width: 100%;
         border: solid 1px rgb(208, 159, 111);
-        height: 7vh;
-        line-height: 7vh;
-        font-size: 4vh;
-        margin-bottom: 0.5vh;
+        margin-bottom: 0.5%;
       }
       label {
         display: block;
         text-align: left;
-        padding: 1vh 0;
+        padding: 1% 0;
       }
     }
   }
@@ -312,13 +324,11 @@
 	}
 
 	.home {
+    overflow: hidden;
 		background: url(../../static/bg.png) no-repeat;
 		background-size: 100% 100%;
 		position: fixed;
-		/*width: 750px;
-		height: 1334px;*/
 		width: 100%;
-		height: 100%;
 		padding-top: 22.6vh;
 		box-sizing: border-box;
 	}
