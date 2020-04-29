@@ -44,10 +44,10 @@
       </div>
     </div>
     <!-- 请输入支付密码 -->
-    <div class="passageAlert">
+    <div class="passageAlert" v-show="isPassageAlert2">
       <ul class="payment">
         <li class="firstLi">
-          <i></i>
+          <i @click="closeAlert"></i>
           请输入支付密码
         </li>
         <li class="twoLi">
@@ -86,6 +86,8 @@ export default {
       setPassageNum: '',
       //显示弹窗
       isPassageAlert: false,
+      //输入支付密码的弹窗
+      isPassageAlert2: false,
       //红包内容
       redPackage: {
         cash: '',
@@ -170,9 +172,12 @@ export default {
         this.isPassageAlert = true;
         return;
       }
+      this.isPassageAlert2=true;
       console.log('支付密码');
     },
-    record() {},
+    record() {
+      this.$router.push('/record')
+    },
     //发送支付密码
     sendPassage() {
       //发送密码接口
@@ -180,10 +185,16 @@ export default {
     },
     //关闭弹窗
     closeAlert() {
-      this.isPassageAlert = false;
-      this.passageNum = null;
-      this.setPassageNum = '';
-      this.passText = '请设置支付密码';
+      if (this.isPassageAlert) {
+        this.isPassageAlert = false;
+        this.passageNum = null;
+        this.setPassageNum = '';
+        this.passText = '请设置支付密码';
+      }
+      if (this.isPassageAlert2) {
+        this.isPassageAlert2 = false;
+        this.paymentPassage=null
+      }
     }
   }
 };
@@ -223,7 +234,7 @@ export default {
         vertical-align: middle;
         -webkit-transform: rotate(45deg);
         position: absolute;
-        left: 5px;
+        left: 10px;
       }
       i:after {
         content: '/';
@@ -420,6 +431,7 @@ export default {
       font-size: 35px;
       border-radius: 10px;
       z-index: 80;
+      outline: none;
     }
     button:last-of-type {
       background-color: #f95c5b;

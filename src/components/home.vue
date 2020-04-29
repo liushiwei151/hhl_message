@@ -69,6 +69,7 @@
 					packageUrl: "",
 					questionnaireUrl: '',
 					pictureActivityId: '',
+          isRedPacketAdmin:false,
           user:{
             city:""
           }
