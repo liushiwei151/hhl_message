@@ -2,13 +2,12 @@
   <div id="app">
     <router-view />
     <elastic :imgUrl="alertImgUrl" v-show="isShow" :class="showAnimate"></elastic>
-    <!-- <div class="mask loadding" v-if="isshow"></div> -->
+    <div class="mask loadding" v-if="isshow"></div>
     <transition name="fade">
       <div class="boxs" v-show="tips.isShow">
         <div class="tips">{{ tips.text }}</div>
       </div>
     </transition>
-
   </div>
 </template>
 
@@ -39,8 +38,7 @@ export default {
         isShow: false,
         text: ''
       },
-      alertImgUrl: '',
-
+      alertImgUrl: ''
     };
   },
   created() {
@@ -48,7 +46,6 @@ export default {
     this.prohibitFontSize();
   },
   methods: {
-
     //wx禁止调整字体大小
     prohibitFontSize() {
       if (typeof WeixinJSBridge == 'object' && typeof WeixinJSBridge.invoke == 'function') {
@@ -113,7 +110,6 @@ export default {
 </script>
 
 <style lang="less">
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
