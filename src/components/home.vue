@@ -91,7 +91,6 @@
 		inject: ['isAlertShow', 'isloadingshow', 'isTips'],
 		created() {
       this.guding= document.documentElement.clientHeight;
-      console.log(this.guding)
 			this.isloadingshow(true);
 			this.slice(location.href);
 		},
@@ -232,10 +231,10 @@
     background: url(../../static/redPackage.gif) no-repeat;
     background-size: 100% 100%;
     width: 114px;
-    height: 10vh;
+    height: 133px;
     position: fixed;
     right: 100px;
-    bottom: 10vh;
+    bottom: 100px;
   }
   .isPass {
     overflow: hidden;

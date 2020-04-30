@@ -6,7 +6,6 @@ var timeCounter;
 function custom(Vue, options) {
   let timeNum = 0; //定时器计数
   let isLong = false; //长按标志
-  console.log(options)
 
   Vue.directive('longTap', {
     bind(el, binding, vNode) {
@@ -14,8 +13,6 @@ function custom(Vue, options) {
       if (!pressTime) {
         pressTime = 1000
       }; //初始化默认时长
-      console.log(pressTime);
-      console.log(binding);
       // 确保提供的表达式是函数
       if (typeof binding.value !== 'function') {
         // 获取组件名称
