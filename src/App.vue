@@ -2,7 +2,7 @@
   <div id="app">
     <router-view />
     <elastic :imgUrl="alertImgUrl" v-show="isShow" :class="showAnimate"></elastic>
-    <div class="mask loadding" v-if="isshow"></div>
+    <!-- <div class="mask loadding" v-if="isshow"></div> --><!--todo-->
     <transition name="fade">
       <div class="boxs" v-show="tips.isShow">
         <div class="tips">{{ tips.text }}</div>

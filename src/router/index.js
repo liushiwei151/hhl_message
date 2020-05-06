@@ -6,6 +6,7 @@ import upload from '@/components/upload'
 import actImg from '@/components/actImg'
 import administration from '@/components/redEnvelopes/administration'
 import record from '@/components/redEnvelopes/record'
+import redEnvelopesReceive from '@/components/redEnvelopes/redEnvelopesReceive'
 
 Vue.use(Router)
 
@@ -39,6 +40,11 @@ export default new Router({
       path:'/record',
       name:'record',
       component:record
+    },
+    {
+      path:'/redEnvelopesReceive',
+      name:'redEnvelopesReceive',
+      component:redEnvelopesReceive
     }
 	]
 })

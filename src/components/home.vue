@@ -62,14 +62,14 @@
 		data() {
 			return {
 				img: ['./static/address.png', './static/liuyan.png'],
-				isHave: "",
+				isHave: true,//todo  ""
 				button: ['./static/button1.png', './static/button2.png', './static/button3.png', './static/button4.png'],
 				userInfo: {
 					informImgUrl: "",
 					packageUrl: "",
 					questionnaireUrl: '',
 					pictureActivityId: '',
-          isRedPacketAdmin:false,
+          isRedPacketAdmin:true,//todo  false
           user:{
             city:""
           }
@@ -203,6 +203,10 @@
 					}
 					this.isAlertShow(true,alert)*/
 				} else if (e == 2) {
+          //
+          this.$router.push('/redEnvelopesReceive')
+          return
+            //todo 以上删除
 					//楼币红包
 					if (this.userInfo.packageUrl == "") {
 						this.isTips('敬请期待！')

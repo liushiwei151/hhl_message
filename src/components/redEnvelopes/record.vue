@@ -1,5 +1,5 @@
 <template>
-  <div class="record">
+  <div class="record" ref='Width'>
     <div class="recordBox">
       <div class="icon"></div>
       <p>
@@ -45,7 +45,7 @@
         <div class="body">
           <div id="wrapper" class="body-month">
             <ul>
-              <li></li>
+              <li ></li>
               <li></li>
               <li v-for="item in allTime">{{ item }}</li>
               <li></li>
@@ -103,7 +103,6 @@ export default {
       return b;
     }
   },
-  mounted() {},
   methods: {
     //完成日历
     complete() {
@@ -139,10 +138,12 @@ export default {
       self.iscroll = new Iscroll('#wrapper', {
         snap: 'li'
       });
+        var width =self.$refs.Width.offsetWidth*0.095;
+        console.log(width)
       if (self.calendarNum != null) {
-        self.iscroll.scrollTo(0, -(self.calendarNum * 29.9), 500);
+        self.iscroll.scrollTo(0, -(self.calendarNum * width), 500);
       } else {
-        self.iscroll.scrollTo(0, -((self.allTime.length - 2) * 29.9), 100);
+        self.iscroll.scrollTo(0, (-(self.allTime.length-2) * width), 100);
       }
       self.iscroll.on('scrollEnd', function() {
         self.calendarNums = Math.ceil(-this.y / 30);
@@ -198,8 +199,8 @@ export default {
       }
       ul {
         li {
-          height: 70px;
-          line-height: 70px;
+          height: 9.5vw;
+          line-height: 9.5vw;
         }
       }
     }
