@@ -7,6 +7,7 @@ import actImg from '@/components/actImg'
 import administration from '@/components/redEnvelopes/administration'
 import record from '@/components/redEnvelopes/record'
 import redEnvelopesReceive from '@/components/redEnvelopes/redEnvelopesReceive'
+import recordWeb from '@/components/redEnvelopes/recordWeb'
 
 Vue.use(Router)
 
@@ -31,20 +32,25 @@ export default new Router({
 			component: actImg
 
 		},
-    {
-      path:'/administration',
-      name:'administration',
-      component:administration
-    },
-    {
-      path:'/record',
-      name:'record',
-      component:record
-    },
-    {
-      path:'/redEnvelopesReceive',
-      name:'redEnvelopesReceive',
-      component:redEnvelopesReceive
-    }
+		{
+			path: '/administration',
+			name: 'administration',
+			component: administration
+		},
+		{
+			path: '/record',
+			name: 'record',
+			component: record
+		},
+		{
+			path: '/redEnvelopesReceive',
+			name: 'redEnvelopesReceive',
+			component: redEnvelopesReceive
+		},
+		{
+			path:'/recordWeb',
+			name:'recordWeb',
+			component:recordWeb
+		}
 	]
 })

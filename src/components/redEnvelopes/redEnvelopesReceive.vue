@@ -1,7 +1,7 @@
 <template>
   <div class='redEnvelopesReceive'>
-    <div class='redEnvelopes'></div>
-    <div class='back' @click="goBack"></div>
+    <div class='redEnvelopes' @click="gotoWeb('recordWeb')"></div>
+    <div class='back' @click="gotoWeb('/')"></div>
   </div>
 </template>
 
@@ -9,8 +9,8 @@
   export default{
     name:'redEnvelopesReceive',
     methods:{
-      goBack(){
-        this.$router.push('/')
+      gotoWeb(e){
+        this.$router.push(e)
       }
     }
   }
