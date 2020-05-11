@@ -23,11 +23,11 @@
 				<button @click="confirm">确认</button>
 			</div>
 		</div>
-		<div v-if="isPassage == -1" class="setPassage">
-			<div class="login1"></div>
+		<div v-if="isPassage == -1" class="setPassage" :style="{height:guding+'px',paddingTop:guding*0.25+'px'}">
+			<div class="login1" :style="{height:guding*0.117+'px'}"></div>
 			<div class="passage">
 				<p>{{ passText }}</p>
-				<div class="box">
+				<div class="box" :style="{height:guding*0.04+'px'}">
 					<input maxlength="4" type="password" v-model="passageNum" />
 					<ul>
 						<li>{{ passageArray[0] }}</li>
@@ -37,7 +37,7 @@
 					</ul>
 				</div>
 			</div>
-			<div class="login2"></div>
+			<div class="login2" :style="{height:guding*0.0592+'px',marginTop:guding*0.28+'px'}"></div>
 		</div>
 		<div class="passageAlert z99" v-show="isPassageAlert">
 			<div class="tips">
@@ -82,12 +82,13 @@
 </template>
 
 <script>
+	import api from '../../getapi.js'
 export default {
 	name: 'administration',
 	data() {
 		return {
 			//是否设置了支付密码1设置-1未设置0默认
-			isPassage: 1,
+			isPassage: 0,
 			//支付密码
 			passageNum: null,
 			passText: '请设置支付密码',
@@ -112,7 +113,11 @@ export default {
 				show2: false
 			},
 			//弹窗按钮文本
-			paymentPassage: null
+			paymentPassage: null,
+			//客户信息
+			userInfo:'',
+			//手机高度
+			guding:0
 		};
 	},
 	inject: ['isTips'],
@@ -126,7 +131,7 @@ export default {
 						this.passageNum = null;
 					} else {
 						if (this.setPassageNum === this.passageNum) {
-							this.sendPassage();
+							this.sendPassage(this.passageNum);
 						} else {
 							this.isPassageAlert = true;
 						}
@@ -136,13 +141,7 @@ export default {
 		},
 		paymentPassage() {
 			if (this.paymentPassage != null && this.paymentPassage.length == 4) {
-				console.log(this.paymentPassage);
-				//楼币余额不足
-				this.elastic('楼币红包账户余额不足','取消','查看余额','请核实后重试');
-				//支付密码错误
-				// this.elastic('支付密码错误,请重试', '忘记密码', '立即重试');
-				//红包创建成功
-				// this.elastic('楼币红包创建成功','返回首页')
+				this.creatRed(this.paymentPassage)
 			}
 		}
 	},
@@ -168,7 +167,62 @@ export default {
 			return a;
 		}
 	},
+	created() {
+		this.userInfo=JSON.parse(localStorage.getItem('userInfo'));
+		this.guding = document.documentElement.clientHeight;
+		this.getAdminInfo();
+	},
 	methods: {
+		//进入红包纪录
+		sendRecords(){
+			this.$router.push()
+		},
+		//创建红包
+		creatRed(e){
+			var data={
+				openid:this.userInfo.user.openid,
+				password:e,
+				memberNo:this.userInfo.user.memberNo,
+				totalAmount:this.redPackage.cash,
+				totalPacket :this.redPackage.num,
+				description :this.redPackage.text
+			}
+			if(this.redPackage.text==''||this.redPackage.text==null){
+				var data={
+					openid:this.userInfo.user.openid,
+					password:e,
+					memberNo:this.userInfo.user.memberNo,
+					totalAmount:this.redPackage.cash,
+					totalPacket :this.redPackage.num,
+					description :'恭喜发财,大吉大利'
+				}
+			}
+			console.log(this.redPackage.text)
+			api.create(data).then((res)=>{
+				if(res.data.code==200){
+					this.elastic('楼币红包创建成功','返回首页')
+				}else if(res.data.code==4006){
+					this.elastic('楼币红包账户余额不足','取消','查看余额','请核实后重试');
+				}else if(res.data.code==4003){
+					this.elastic('支付密码错误,请重试', '忘记密码', '立即重试');
+				}
+			})
+		},
+		//获取用户是否有支付密码
+		getAdminInfo(){
+			let data =this.userInfo.user.memberNo;
+			api.adminInfo(data).then((res)=>{
+				if(res.data.code==200){
+					if(res.data.data.isSetPassword){
+						this.isPassage=1
+					}else{
+						this.isPassage=-1
+					}
+				}else{
+					this.isTips(res.data.msg)
+				}
+			})
+		},
 		//点击弹框按钮
 		buttonAlert(e) {
 			if (e == '知道了') {
@@ -184,8 +238,14 @@ export default {
 				this.closeAlert(3);
 			}else if(e=='查看余额'){
 				this.$router.push('record')
+			}else if(e=='重新设置'){
+				this.passText='请设置支付密码';
+				this.setPassageNum="";
+				this.passageNum=null;
+				this.isPassageAlert=false;
+			}else if(e=='查看余额'){
+				this.$router.push('record')
 			}
-			console.log(e);
 		},
 		//显示指定内容的弹窗
 		elastic(a, b, c, d) {
@@ -230,9 +290,19 @@ export default {
 			this.$router.push('/record');
 		},
 		//发送支付密码
-		sendPassage() {
+		sendPassage(e) {
 			//发送密码接口
-			this.isPassage = 1;
+			var data ={
+				memberNo:this.userInfo.user.memberNo,
+				password:e
+			}
+			api.savePassword(data).then((res)=>{
+				if(res.data.code==200){
+					this.isPassage = 1;
+				}else{
+					this.isTips(res.data.msg)
+				}
+			})
 		},
 		//关闭弹窗
 		closeAlert(e) {
@@ -266,6 +336,11 @@ export default {
 }
 .all {
 	font-size: 30px;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	overflow-y: auto;
 }
 .passageAlert {
 	position: fixed;
@@ -386,9 +461,9 @@ export default {
 		border-radius: 10px;
 		margin: 0 auto;
 		div:first-of-type {
-			padding: 3vh 0;
+			padding: 6vw 0;
 			p:first-of-type {
-				margin-bottom: 2vh;
+				margin-bottom: 4vw;
 			}
 			p:last-of-type {
 				margin: 0;
@@ -415,8 +490,8 @@ export default {
 			font-size: 25px;
 			color: #589bdc;
 			width: 100%;
-			height: 7vh;
-			line-height: 7vh;
+			height: 10vw;
+			line-height: 10vw;
 			text-align: center;
 		}
 	}
@@ -424,16 +499,12 @@ export default {
 .setPassage {
 	background: url(../../../static/envelopes/login.png) no-repeat;
 	background-size: 100% 100%;
-	position: fixed;
 	width: 100%;
-	height: 100%;
 	z-index: -1;
 	display: flex;
 	align-items: center;
 	flex-direction: column;
 	box-sizing: border-box;
-	padding-top: 25vh;
-
 	.passage {
 		margin-bottom: 50px;
 		input {
@@ -449,7 +520,6 @@ export default {
 		.box {
 			width: 350px;
 			position: relative;
-			height: 4vh;
 			ul {
 				display: flex;
 				justify-content: space-between;
@@ -461,9 +531,9 @@ export default {
 			}
 			li {
 				width: 22%;
-				border-bottom: solid 0.5vh #fff;
+				border-bottom: solid 1vw #fff;
 				margin-right: 10px;
-				font-size: 4vh;
+				font-size: 6vw;
 				font-weight: 1000;
 				color: #fff;
 			}
@@ -479,18 +549,14 @@ export default {
 		background: url(../../../static/envelopes/login2.png) no-repeat;
 		background-size: 100% 100%;
 		width: 161px;
-		height: 11.7vh;
 		z-index: 5;
-		margin-bottom: 2vh;
+		margin-bottom: 3.5vw;
 	}
 	.login2 {
 		background: url(../../../static/envelopes/login3.png) no-repeat;
 		background-size: 100% 100%;
 		width: 358px;
-		height: 5.92vh;
 		z-index: 5;
-		position: absolute;
-		bottom: 10vh;
 	}
 }
 .hand {

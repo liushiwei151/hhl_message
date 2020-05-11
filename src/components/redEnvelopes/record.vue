@@ -1,19 +1,19 @@
 <template>
 	<div class="record" ref="Width">
 		<div class="recordBox">
-			<div class="icon"></div>
+			<div class="icon" :style="{background:'url('+redPackInfo.headImgUrl+') no-repeat',backgroundSize:'100% 100%'}"></div>
 			<p>
 				余额:
-				<span>523楼币</span>
+				<span>{{redPackInfo.lastAmount}}楼币</span>
 			</p>
 			<p>小北共发出</p>
 			<p>
-				<span class="bigSize">1078</span>
+				<span class="bigSize">{{redPackInfo.usedAmount}}</span>
 				楼币红包
 			</p>
 			<p>
 				发出楼币红包
-				<span class="bigSize">84</span>
+				<span class="bigSize">{{redPackInfo.sentPacket}}</span>
 				个
 			</p>
 			<div class="query" @click="showCalendar">
@@ -22,17 +22,18 @@
 			</div>
 		</div>
 		<ul class="recordList">
-			<li v-for="a in 15">
+			<li v-for="item in redPackInfo.redPacketList">
 				<div class="listTitle">
 					<span>红包</span>
-					<span>30</span>
+					<span>{{item.totalAmount}}</span>
 				</div>
 				<div class="listBody">
 					<div>
-						<div>Id:200</div>
-						<div class="body-time">2020-04-21 21:10:49</div>
+						<div>Id:{{item.redPacketId}}</div>
+						<div class="body-time">{{item.insertTime}}</div>
 					</div>
-					<div class="body-button">已完成</div>
+					<div class="body-button" v-if='item.status==1'>已完成</div>
+					<div class="body-button" v-if='item.status==-1'>未完成</div>
 				</div>
 			</li>
 		</ul>
@@ -61,6 +62,7 @@
 
 <script>
 import Iscroll from 'iscroll';
+import api from '../../getapi.js'
 export default {
 	name: 'record',
 	data() {
@@ -71,7 +73,11 @@ export default {
 			//日历获取的值的下标
 			calendarNum: null,
 			//存储的下标
-			calendarNums: 0
+			calendarNums: 0,
+			//客户信息
+			userInfo:'',
+			//红包信息
+			redPackInfo:''
 		};
 	},
 	computed: {
@@ -103,7 +109,27 @@ export default {
 			return b;
 		}
 	},
+	inject: ['isTips'],
+	created() {
+		this.userInfo=JSON.parse(localStorage.getItem('userInfo'));
+		this.sendRecords();
+	},
 	methods: {
+		//获取信息
+		sendRecords(e){
+			let data ={
+				openid:this.userInfo.user.openid,
+				memberNo:this.userInfo.user.memberNo,
+				time:e||''
+			}
+			api.sendRecords(data).then((res)=>{
+				if(res.data.code==200){
+					this.redPackInfo=res.data.data
+				}else{
+					this.isTips(res.data.msg)
+				}
+			})
+		},
 		//完成日历
 		complete() {
 			this.isCalendarShow = false;
@@ -248,8 +274,8 @@ export default {
 	.icon {
 		width: 120px;
 		height: 120px;
-		background-color: #fff;
 		border-radius: 10px;
+		background-size: 100% 100%;
 	}
 	p {
 		margin: 0;

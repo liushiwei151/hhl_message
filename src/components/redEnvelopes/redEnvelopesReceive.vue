@@ -1,14 +1,39 @@
 <template>
   <div class='redEnvelopesReceive'>
-    <div class='redEnvelopes' @click="gotoWeb('recordWeb')"></div>
+    <div class='redEnvelopes' @click="openRedPack"></div>
     <div class='back' @click="gotoWeb('/')"></div>
   </div>
 </template>
 
 <script>
+	import api from '../../getapi.js'
   export default{
     name:'redEnvelopesReceive',
+	data(){
+		return{
+			//客户信息
+			userInfo:''
+		}
+	},
+	created() {
+		this.userInfo=JSON.parse(localStorage.getItem('userInfo'));
+	},
     methods:{
+		//打开红包
+		openRedPack(){
+			let data={
+				redPacketId:'',
+				memberNo:'',
+				// openid:this.userInfo.
+			}
+			api.openRedPack(data).then(res=>{
+				if(res.data.code==200){
+					
+				}else{
+					this.isTips(res.data.msg)
+				}
+			})
+		},
       gotoWeb(e){
         this.$router.push(e)
       }
