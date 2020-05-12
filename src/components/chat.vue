@@ -79,7 +79,7 @@ export default {
   inject: ['isloadingshow', 'isTips'],
   created() {
     this.isloadingshow(true);
-    this.slice(location.href);
+    // this.slice(location.href);
     this.getChat();
   },
   mounted() {

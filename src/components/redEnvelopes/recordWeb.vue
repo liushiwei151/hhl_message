@@ -5,16 +5,16 @@
 			<div class="header-content">
 				<ul>
 					<li class="black">拼手气红包</li>
-					<li>恭喜发财,大吉大利</li>
+					<li>{{redPackInfo.description}}</li>
 				</ul>
 				<div class="red fsizebig">
-					-5
+					{{redPackInfo.amount}}
 					<span>楼币</span>
 				</div>
 			</div>
 			<div class="header-button">
-				<a href="#">去使用</a>
-				<a href="#">查看余额</a>
+				<a href="https://wx.hhl1916.com/huanghelou1916-center/wx/gCode?name=toMall">去使用</a>
+				<a :href="url">查看余额</a>
 			</div>
 		</div>
 		<div v-if='isTime24' class='touxiang'>
@@ -28,17 +28,17 @@
 				<i class="xian xianright"></i>
 			</div>
 			<ul class="content">
-				<li v-for="a in 5">
+				<li v-for="item in redPackInfo.receivePacketRecords">
 					<div class="custom">
-						<i></i>
+						<i :style="{background:'url('+item.headImgUrl+') no-repeat',backgroundSize:'100% 100%'}"></i>
 						<div>
-							<span class="black">小北</span>
-							<span>2020-05-07 10:47:40</span>
+							<span class="black">{{item.nickName}}</span>
+							<span>{{item.insertTime}}</span>
 						</div>
 					</div>
 					<div class="cash">
-						<span class="black">10楼币</span>
-						<span class="red">手气最佳</span>
+						<span class="black">{{item.amount}}楼币</span>
+						<span class="red" v-if='item.isMax'>手气最佳</span>
 					</div>
 				</li>
 			</ul>
@@ -72,17 +72,60 @@
 </template>
 
 <script>
+	import api from '../../getapi.js'
 export default {
 	name: 'recordWeb',
 	data(){
 		return{
-			//是否超市
-			isTime24:true
+			//是否超时
+			isTime24:false,
+			//红包弹框信息
+			redcordInfo:'',
+			//客户信息
+			userInfo:'',
+			//红包信息
+			redPackInfo:''
+		}
+	},
+	inject: ['isTips'],
+	created() {
+		this.redcordInfo=JSON.parse(localStorage.getItem('resData'));
+		this.userInfo=JSON.parse(localStorage.getItem('userInfo'));
+		this.doData(this.redcordInfo);
+		this.receiveRecords();
+	},
+	computed:{
+		url(){
+			var a ='https://wx.hhl1916.com/opc/ms/score/queryScoreLogList?back=gome&openid='+this.userInfo.user.openid+'&customerId='+this.userInfo.user.memberNo
+			return a
 		}
 	},
 	methods: {
+		// 红包信息接口
+		receiveRecords(){
+			var data ={
+				redPacketId:this.userInfo.redPacketId,
+				memberNo:this.userInfo.user.memberNo
+			}
+			api.receiveRecords(data).then((res)=>{
+				if(res.data.code==200){
+					this.redPackInfo=res.data.data;
+				}else{
+					this.isTips(res.data.msg)
+				}
+			})
+		},
 		gotoWeb(e) {
 			this.$router.push(e);
+		},
+		//执行接口传的值
+		doData(e){
+			console.log(e);
+			if(e.code==200){
+				
+			}else{
+				this.isTips(e.msg)
+			}
 		}
 	}
 };
@@ -97,6 +140,7 @@ export default {
 .recordWeb {
 	font-size: 30px;
 	background-color: rgb(235, 235, 235);
+	position: absolute;
 	.top{
 		height: 120px;
 		background-color: #fff;
@@ -165,7 +209,7 @@ export default {
 			height: 50px;
 			text-decoration: none;
 			color: #fff;
-			border-radius: 5px;
+			border-radius: 10px;
 			padding: 10px 0;
 		}
 		a:first-of-type {
@@ -201,7 +245,7 @@ export default {
 		}
 	}
 	.content {
-		padding: 0 30px;
+		padding: 0 30px 30px;
 		box-sizing: border-box;
 		li {
 			@center();
@@ -221,7 +265,6 @@ export default {
 					width: 80px;
 					height: 80px;
 					display: block;
-					background-color: blue;
 				}
 				div {
 					display: flex;
@@ -236,6 +279,9 @@ export default {
 					}
 				}
 			}
+		}
+		li:last-of-type{
+			margin-bottom: 0;
 		}
 	}
 }

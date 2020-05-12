@@ -89,8 +89,8 @@ export default {
 		this.guding = document.documentElement.clientHeight;
 		this.isloadingshow(true);
 		//todo 以下修改
-		this.slice('http://qrhhl.yunyutian.cn/market/index.html?openid=oXslc0zEvV5RwspCzgWcQMmL-_yA&customerId=0000003#/');
-		// this.slice(location.href);
+		// this.slice('http://qrhhl.yunyutian.cn/market/index.html?openid=oXslc0zEvV5RwspCzgWcQMmL-_yA&customerId=0000003#/');
+		this.slice(location.href);
 	},
 	methods: {
 		//重新上传用户信息
@@ -133,14 +133,14 @@ export default {
 				);
 			}
 			//todo以后return以前删除
-			let data = {
-				openid: this.initData[0],
-				customerId: this.initData[1],
-				latitude:  0,
-				longitude:  0
-			};
-			this.getMarket(data);
-			return;
+			// let data = {
+			// 	openid: this.initData[0],
+			// 	customerId: this.initData[1],
+			// 	latitude:  0,
+			// 	longitude:  0
+			// };
+			// this.getMarket(data);
+			// return;
 			this.getJsSign();
 		},
 		//获取wx权限

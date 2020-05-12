@@ -18,20 +18,18 @@
 	created() {
 		this.userInfo=JSON.parse(localStorage.getItem('userInfo'));
 	},
+	inject: ['isTips'],
     methods:{
 		//打开红包
 		openRedPack(){
 			let data={
-				redPacketId:'',
-				memberNo:'',
-				// openid:this.userInfo.
+				redPacketId:this.userInfo.redPacketId,
+				memberNo:this.userInfo.user.memberNo,
+				openid:this.userInfo.user.openid
 			}
 			api.openRedPack(data).then(res=>{
-				if(res.data.code==200){
-					
-				}else{
-					this.isTips(res.data.msg)
-				}
+				this.$router.push('recordWeb');
+				localStorage.setItem('resData',JSON.stringify(res.data))
 			})
 		},
       gotoWeb(e){

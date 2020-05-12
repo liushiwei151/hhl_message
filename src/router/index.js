@@ -8,6 +8,7 @@ import administration from '@/components/redEnvelopes/administration'
 import record from '@/components/redEnvelopes/record'
 import redEnvelopesReceive from '@/components/redEnvelopes/redEnvelopesReceive'
 import recordWeb from '@/components/redEnvelopes/recordWeb'
+import redPackDetails from '@/components/redEnvelopes/redPackDetails'
 
 Vue.use(Router)
 
@@ -51,6 +52,11 @@ export default new Router({
 			path:'/recordWeb',
 			name:'recordWeb',
 			component:recordWeb
+		},
+		{
+			path:'/redPackDetails',
+			name:'redPackDetails',
+			component:redPackDetails
 		}
 	]
 })

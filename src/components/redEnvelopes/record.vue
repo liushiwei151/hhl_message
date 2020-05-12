@@ -1,19 +1,19 @@
 <template>
 	<div class="record" ref="Width">
 		<div class="recordBox">
-			<div class="icon" :style="{background:'url('+redPackInfo.headImgUrl+') no-repeat',backgroundSize:'100% 100%'}"></div>
+			<div class="icon" :style="{ background: 'url(' + redPackInfo.headImgUrl + ') no-repeat', backgroundSize: '100% 100%' }"></div>
 			<p>
 				余额:
-				<span>{{redPackInfo.lastAmount}}楼币</span>
+				<span>{{ redPackInfo.lastAmount }}楼币</span>
 			</p>
 			<p>小北共发出</p>
 			<p>
-				<span class="bigSize">{{redPackInfo.usedAmount}}</span>
+				<span class="bigSize">{{ redPackInfo.usedAmount }}</span>
 				楼币红包
 			</p>
 			<p>
 				发出楼币红包
-				<span class="bigSize">{{redPackInfo.sentPacket}}</span>
+				<span class="bigSize">{{ redPackInfo.sentPacket }}</span>
 				个
 			</p>
 			<div class="query" @click="showCalendar">
@@ -22,18 +22,14 @@
 			</div>
 		</div>
 		<ul class="recordList">
-			<li v-for="item in redPackInfo.redPacketList">
-				<div class="listTitle">
-					<span>红包</span>
-					<span>{{item.totalAmount}}</span>
-				</div>
+			<li v-for="item in redPackInfo.redPacketList" @click="gotoDetails(item.redPacketId)">
 				<div class="listBody">
 					<div>
-						<div>Id:{{item.redPacketId}}</div>
-						<div class="body-time">{{item.insertTime}}</div>
+						<span>红包</span>
+						<div>Id:{{ item.redPacketId }}</div>
+						<div class="body-time">{{ item.insertTime }}</div>
 					</div>
-					<div class="body-button" v-if='item.status==1'>已完成</div>
-					<div class="body-button" v-if='item.status==-1'>未完成</div>
+					<span>{{ item.totalAmount }}</span>
 				</div>
 			</li>
 		</ul>
@@ -62,7 +58,7 @@
 
 <script>
 import Iscroll from 'iscroll';
-import api from '../../getapi.js'
+import api from '../../getapi.js';
 export default {
 	name: 'record',
 	data() {
@@ -75,9 +71,11 @@ export default {
 			//存储的下标
 			calendarNums: 0,
 			//客户信息
-			userInfo:'',
+			userInfo: '',
 			//红包信息
-			redPackInfo:''
+			redPackInfo: '',
+			//定时器
+			isShow: true
 		};
 	},
 	computed: {
@@ -111,33 +109,57 @@ export default {
 	},
 	inject: ['isTips'],
 	created() {
-		this.userInfo=JSON.parse(localStorage.getItem('userInfo'));
+		this.userInfo = JSON.parse(localStorage.getItem('userInfo'));
 		this.sendRecords();
 	},
 	methods: {
-		//获取信息
-		sendRecords(e){
-			let data ={
-				openid:this.userInfo.user.openid,
-				memberNo:this.userInfo.user.memberNo,
-				time:e||''
-			}
-			api.sendRecords(data).then((res)=>{
-				if(res.data.code==200){
-					this.redPackInfo=res.data.data
-				}else{
-					this.isTips(res.data.msg)
+		//跳转详情页面
+		gotoDetails(e) {
+			api.sendDetail(e).then(res => {
+				if (res.data.code == 200) {
+					this.$router.push({
+						name: 'redPackDetails',
+						params: {
+							data: res.data.data
+						}
+					});
+					console.log(res.data.data);
+				} else {
+					this.isTips(res.data.msg);
 				}
-			})
+			});
+		},
+		//获取信息
+		sendRecords(e) {
+			let data = {
+				openid: this.userInfo.user.openid,
+				memberNo: this.userInfo.user.memberNo,
+				time: e || ''
+			};
+			api.sendRecords(data).then(res => {
+				if (res.data.code == 200) {
+					this.redPackInfo = res.data.data;
+				} else {
+					this.isTips(res.data.msg);
+				}
+			});
 		},
 		//完成日历
 		complete() {
-			this.isCalendarShow = false;
+			this.closeCalendar();
 			this.calendarNum = this.calendarNums;
-			console.log(this.allTime[this.calendarNum]);
+			var b = this.allTime[this.calendarNum].slice(0, -1).split('年');
+			var time = b[0] + '-' + b[1] + '-01 00:00:00';
+			this.sendRecords(time);
 		},
 		//销毁并关闭日历
 		closeCalendar() {
+			let self = this;
+			document.removeEventListener(
+				'touchmove',
+				self.prev,
+				{ passive: false }
+			);
 			this.isCalendarShow = false;
 			this.iscroll.destroy();
 		},
@@ -149,15 +171,16 @@ export default {
 				self.initCalendar();
 			}, 0);
 		},
+		prev(ev) {
+			ev.preventDefault();
+		},
 		//初始化日历
 		initCalendar() {
 			var self = this;
 			// 阻止浏览器的默认行为
 			document.addEventListener(
 				'touchmove',
-				function(ev) {
-					ev.preventDefault();
-				},
+				self.prev,
 				{ passive: false }
 			);
 			var wrapper = document.getElementById('wrapper');
@@ -165,14 +188,13 @@ export default {
 				snap: 'li'
 			});
 			var width = self.$refs.Width.offsetWidth * 0.095;
-			console.log(width);
 			if (self.calendarNum != null) {
 				self.iscroll.scrollTo(0, -(self.calendarNum * width), 500);
 			} else {
 				self.iscroll.scrollTo(0, -(self.allTime.length - 2) * width, 100);
 			}
 			self.iscroll.on('scrollEnd', function() {
-				self.calendarNums = Math.ceil(-this.y / 30);
+				self.calendarNums = Math.ceil(-this.y / width);
 			});
 		}
 	}
@@ -287,9 +309,6 @@ export default {
 		}
 	}
 }
-.recordList::-webkit-scrollbar {
-	display: none;
-}
 .recordList {
 	width: 100%;
 	padding: 0 11px;
@@ -313,6 +332,8 @@ export default {
 			justify-content: space-between;
 			align-items: center;
 			text-align: left;
+			padding: 0 10px;
+			box-sizing: border-box;
 			.body-time {
 				font-size: 25px;
 				color: #afafaf;

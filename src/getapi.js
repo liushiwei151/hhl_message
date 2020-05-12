@@ -112,6 +112,13 @@ const sendRecords = (data) => {
 const openRedPack=(data)=>{
 	return axios.post('packet/open',data)
 }
+//领取红包后的详情页
+const receiveRecords=(data)=>{
+	return axios.get('packet/receiveRecords/'+data.redPacketId+'/'+data.memberNo)
+}
+const sendDetail=(data)=>{
+	return axios.get('packet/sendDetail/'+data)
+}
 export default {
 	openHome,
 	market,
@@ -129,5 +136,7 @@ export default {
 	savePassword,
 	create,
 	sendRecords,
-	openRedPack
+	openRedPack,
+	receiveRecords,
+	sendDetail
 }
