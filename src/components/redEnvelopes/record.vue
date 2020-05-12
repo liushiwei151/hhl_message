@@ -148,6 +148,10 @@ export default {
 		complete() {
 			this.closeCalendar();
 			this.calendarNum = this.calendarNums;
+			if (this.allTime[this.calendarNum] == '全部') {
+				this.sendRecords();
+				return;
+			}
 			var b = this.allTime[this.calendarNum].slice(0, -1).split('年');
 			var time = b[0] + '-' + b[1] + '-01 00:00:00';
 			this.sendRecords(time);
@@ -155,11 +159,7 @@ export default {
 		//销毁并关闭日历
 		closeCalendar() {
 			let self = this;
-			document.removeEventListener(
-				'touchmove',
-				self.prev,
-				{ passive: false }
-			);
+			document.removeEventListener('touchmove', self.prev, { passive: false });
 			this.isCalendarShow = false;
 			this.iscroll.destroy();
 		},
@@ -178,11 +178,7 @@ export default {
 		initCalendar() {
 			var self = this;
 			// 阻止浏览器的默认行为
-			document.addEventListener(
-				'touchmove',
-				self.prev,
-				{ passive: false }
-			);
+			document.addEventListener('touchmove', self.prev, { passive: false });
 			var wrapper = document.getElementById('wrapper');
 			self.iscroll = new Iscroll('#wrapper', {
 				snap: 'li'
@@ -191,10 +187,10 @@ export default {
 			if (self.calendarNum != null) {
 				self.iscroll.scrollTo(0, -(self.calendarNum * width), 500);
 			} else {
-				self.iscroll.scrollTo(0, -(self.allTime.length - 2) * width, 100);
+				self.iscroll.scrollTo(0, -(self.allTime.length - 1) * width, 100);
 			}
 			self.iscroll.on('scrollEnd', function() {
-				self.calendarNums = Math.ceil(-this.y / width);
+				self.calendarNums = Math.round(-this.y / width);
 			});
 		}
 	}
@@ -309,6 +305,10 @@ export default {
 		}
 	}
 }
+.recordList::-webkit-scrollbar {
+    display: none;
+}
+
 .recordList {
 	width: 100%;
 	padding: 0 11px;

@@ -2,8 +2,7 @@
 	<div id="app">
 		<router-view />
 		<elastic :imgUrl="alertImgUrl" v-show="isShow" :class="showAnimate"></elastic>
-		<!-- <div class="mask loadding" v-if="isshow"></div> -->
-		<!-- todo -->
+		<div class="mask loadding" v-if="isshow"></div>
 		<transition name="fade">
 			<div class="boxs" v-show="tips.isShow">
 				<div class="tips">{{ tips.text }}</div>
@@ -43,7 +42,7 @@ export default {
     };
   },
   created() {
-    // this.$router.push('/');//todo
+    this.$router.push('/');
     this.prohibitFontSize();
 		//禁止看到链接
 		this.prohibit();
