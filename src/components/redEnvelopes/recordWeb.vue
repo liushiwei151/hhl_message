@@ -30,7 +30,7 @@
 			<ul class="content">
 				<li v-for="item in redPackInfo.receivePacketRecords">
 					<div class="custom">
-						<i :style="{background:'url('+item.headImgUrl+') no-repeat',backgroundSize:'100% 100%'}"></i>
+						<i :style="{backgroundImage:'url('+item.headImgUrl+')'}"></i>
 						<div>
 							<span class="black">{{item.nickName}}</span>
 							<span>{{item.insertTime}}</span>
@@ -265,6 +265,8 @@ export default {
 					width: 80px;
 					height: 80px;
 					display: block;
+					background-size: 100% 100%;
+					background-repeat: no-repeat;
 				}
 				div {
 					display: flex;

@@ -1,12 +1,12 @@
 <template>
 	<div class="record" ref="Width">
 		<div class="recordBox">
-			<div class="icon" :style="{ background: 'url(' + redPackInfo.headImgUrl + ') no-repeat', backgroundSize: '100% 100%' }"></div>
+			<div class="icon" :style="{ backgroundImage: 'url(' + redPackInfo.headImgUrl + ')' }"></div>
 			<p>
 				余额:
 				<span>{{ redPackInfo.lastAmount }}楼币</span>
 			</p>
-			<p>小北共发出</p>
+			<p>{{userInfo.user.nickName}}共发出</p>
 			<p>
 				<span class="bigSize">{{ redPackInfo.usedAmount }}</span>
 				楼币红包
@@ -294,6 +294,7 @@ export default {
 		height: 120px;
 		border-radius: 10px;
 		background-size: 100% 100%;
+		background-repeat:no-repeat;
 	}
 	p {
 		margin: 0;
