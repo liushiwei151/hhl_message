@@ -48,15 +48,7 @@ export default {
       img: ['./static/right.png', './static/ellipsis.png'],
       text: '',
       charData: [
-        {
-          content: '您好，欢迎留言123。',
-          img: 'https://wxfile.hhl1916.com/wx/1/headimg/5d6bb2dae5654addbddb8d356826004b.jpg',
-          isTime: true,
-          nickName: '楼楼',
-          time: '星期三 13:03',
-          type: 1,
-          userId: 'admin'
-        },
+       
       ],
       screenHeight: '',
       //客户留言和id
