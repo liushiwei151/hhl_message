@@ -18,11 +18,11 @@
 			<div
 				class="addInfo"
 				v-if="status == 0"
-				:style="{ height: guding * 0.76 + 'px', fontSize: guding * 0.03 + 'px', paddingTop: guding * 0.1 + 'px' }"
+				:style="{ height: guding * 0.8 + 'px', fontSize: guding * 0.03 + 'px', paddingTop: guding * 0.1 + 'px' }"
 			>
 				<div>
 					<label for="userNum">用户编号 :</label>
-					<input type="text" id="userNum" v-model="passInfo.inputMemberNo" :style="{ height: guding * 0.05 + 'px' }" />
+					<input type="text" id="userNum" v-model="passInfo.inputMemberNo" :style="{ height: guding * 0.06 + 'px' }" />
 				</div>
 				<div>
 					<label for="userName">姓名 :</label>
@@ -35,6 +35,10 @@
 				<div>
 					<label for="addresNum">专卖证号 :</label>
 					<input type="text" id="addresNum" v-model="passInfo.monopolyNo" :style="{ height: guding * 0.06 + 'px' }" />
+				</div>
+				<div>
+					<label for="phone">手机号码 :</label>
+					<input type="number" id="phone" v-model="passInfo.phone" :style="{ height: guding * 0.06 + 'px' }" />
 				</div>
 				<div><i @click="inPass" :style="{ height: guding * 0.07 + 'px' }"></i></div>
 			</div>
@@ -79,7 +83,8 @@ export default {
 				storeName: '',
 				monopolyNo: '',
 				inputMemberNo: '',
-				userId: ''
+				userId: '',
+				phone:''
 			},
 			guding: 0
 		};
@@ -114,7 +119,8 @@ export default {
 				this.passInfo.realName == '' ||
 				this.passInfo.storeName == '' ||
 				this.passInfo.monopolyNo == '' ||
-				this.passInfo.inputMemberNo == ''
+				this.passInfo.inputMemberNo == ''||
+				this.passInfo.phone==''
 			) {
 				this.isTips('信息不能为空！');
 				return;

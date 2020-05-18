@@ -106,7 +106,7 @@ export default {
 			//弹窗提示
 			warning: {
 				text1: '两次输入的支付密码不一致',
-				text2: '123',
+				text2: '',
 				button: '重新设置',
 				show: false,
 				button2: '',
