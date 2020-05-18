@@ -96,7 +96,8 @@ export default {
 	},
 	computed:{
 		url(){
-			var a ='https://wx.hhl1916.com/opc/ms/score/queryScoreLogList?back=gome&openid='+this.userInfo.user.openid+'&customerId='+this.userInfo.user.memberNo
+			var a = 'https://wx.hhl1916.com/opc/ms/score/queryScoreLogList?openid=' + this.userInfo.user.openid;
+			// var a ='https://wx.hhl1916.com/opc/ms/score/queryScoreLogList?back=gome&openid='+this.userInfo.user.openid+'&customerId='+this.userInfo.user.memberNo
 			return a
 		}
 	},
