@@ -5,6 +5,11 @@
 			<div class="img"><img :src="img[0]" /></div>
 			<div>当前城市：{{ userInfo.user.city }}</div>
 		</div>
+		<div class='textBox'>
+			<transition name="slide">
+			   <p class="text" :key="text.id">{{ text.val }}</p>
+			</transition>
+		</div>
 		<div class="home-body" v-show="isHave === true">
 			<div v-for="(item, index) in button" :key="index" class="img" @click="click(index)"><img :src="item" /></div>
 		</div>
@@ -86,7 +91,9 @@ export default {
 				userId: '',
 				phone:''
 			},
-			guding: 0
+			guding: 0,
+			number:0,
+			textArr:[]
 		};
 	},
 	inject: ['isAlertShow', 'isloadingshow', 'isTips'],
@@ -97,7 +104,47 @@ export default {
 		// this.slice('http://qrhhl.yunyutian.cn/market/index.html?openid=oXslc0zEvV5RwspCzgWcQMmL-_yA&customerId=0000003#/');
 		this.slice(location.href);
 	},
+	mounted() {
+		this.startMove();
+		    if (this.number === this.textArr.length-1) {
+		      this.number = 0;
+		    } else {
+		      this.number += 1;
+		    }
+	},
+	computed:{
+		text() {
+		  return {
+		    id: this.number,
+		    val: this.textArr[this.number]
+		  };
+		}
+	},
 	methods: {
+    //获取轮播文字
+    getTop20Record(e){
+      let self = this;
+      api.getTop20Record(e).then((res)=>{
+        if(res.data.code==200){
+         self.textArr= res.data.data.map((res)=>{
+           var a ='恭喜'+res.memberNo+'获得'+res.prizeName+'一件'
+            return a
+          })
+        }else{
+          self.isTips(res.data.msg);
+        }
+      })
+    },
+		 startMove() {
+		      let timer = setTimeout(() => {
+		        if (this.number ===this.textArr.length-1) {
+		          this.number = 0;
+		        } else {
+		          this.number += 1;
+		        }
+		        this.startMove();
+		      }, 3000); // 滚动不需要停顿则将时间改成动画持续时间
+		    },
 		//重新上传用户信息
 		rewview() {
 			this.status = 0;
@@ -138,6 +185,7 @@ export default {
 						[i].split('=')[1]
 				);
 			}
+      this.getTop20Record(this.initData[0]);
 			//todo以后return以前删除
 			// let data = {
 			// 	openid: this.initData[0],
@@ -356,7 +404,37 @@ export default {
 	padding-top: 22.6vh;
 	box-sizing: border-box;
 }
-
+//文字滚动效果
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 3s linear;
+}
+.slide-enter {
+  transform: translateY(40px) scale(1);
+  opacity: 0.5;
+}
+.slide-enter-to {
+  opacity: 1;
+}
+.slide-leave-to {
+  transform: translateY(-40px) scale(0.8);
+  opacity: 0;
+}
+.textBox {
+  width: 100%;
+  height: 5vh;
+  margin: 2vh auto 0;
+  position: relative;
+  text-align: center;
+  .text {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    margin-top: 10px;
+    color: rgb(200, 130, 45);
+    font-size: 30px;
+  }
+}
 .address {
 	display: flex;
 	justify-content: flex-start;
@@ -376,11 +454,11 @@ export default {
 .home-body {
 	padding: 0 8.2vw 0 16.2vw;
 	box-sizing: border-box;
-	height: 57.2vh;
+	height: 53vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	margin: 2.77vh 0;
+	margin: 0 0 2.77vh;
 
 	.img {
 		height: 12.9vh;

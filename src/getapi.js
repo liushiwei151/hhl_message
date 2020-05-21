@@ -2,9 +2,9 @@ import axios from 'axios'
 import qs from 'qs'
 // axios.defaults.timeout = 3000; //响应时间
 //测试
-// axios.defaults.baseURL = 'http://qrhhl.yunyutian.cn/huanghelou1916-market/market'; //配置接口地址
+axios.defaults.baseURL = 'http://qrhhl.yunyutian.cn/huanghelou1916-market/market'; //配置接口地址
 //正式
-axios.defaults.baseURL = 'https://qr.hhl1916.com/huanghelou1916-market/market';   //配置接口地址
+// axios.defaults.baseURL = 'https://qr.hhl1916.com/huanghelou1916-market/market';   //配置接口地址
 axios.defaults.withCredentials = true;
 
 //POST传参序列化(添加请求拦截器)
@@ -119,6 +119,10 @@ const receiveRecords=(data)=>{
 const sendDetail=(data)=>{
 	return axios.get('packet/sendDetail/'+data)
 }
+//获取轮播文字
+const getTop20Record=(data)=>{
+  return axios.get('index/getTop20Record/'+data)
+}
 export default {
 	openHome,
 	market,
@@ -138,5 +142,6 @@ export default {
 	sendRecords,
 	openRedPack,
 	receiveRecords,
-	sendDetail
+	sendDetail,
+  getTop20Record
 }
