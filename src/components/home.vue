@@ -185,7 +185,6 @@ export default {
 						[i].split('=')[1]
 				);
 			}
-      this.getTop20Record(this.initData[0]);
 			//todo以后return以前删除
 			// let data = {
 			// 	openid: this.initData[0],
@@ -240,6 +239,9 @@ export default {
 					localStorage.setItem('userInfo', JSON.stringify(self.userInfo));
 					self.isHave = res.data.data.isHave;
 					self.userInfo.isRedPacketAdmin=res.data.data.isRedPacketAdmin;
+          setTimeout(()=>{
+            self.getTop20Record(self.initData[0]);
+          })
 					self.isloadingshow(false);
 				} else {
 					self.isTips(res.data.msg);
