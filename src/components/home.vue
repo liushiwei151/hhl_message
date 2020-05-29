@@ -67,7 +67,7 @@ export default {
 	data() {
 		return {
 			img: ['./static/address.png', './static/liuyan.png'],
-			isHave: '',
+			isHave: true,//todo ''
 			button: ['./static/button1.png', './static/button2.png', './static/button3.png', './static/button4.png'],
 			userInfo: {
 				informImgUrl: '',
@@ -252,6 +252,9 @@ export default {
 		click(e) {
 			if (e == 0) {
 				//问卷调查
+        //todo
+        this.$router.push('investigationWeb')
+       return
 				if (this.userInfo.questionnaireUrl == '') {
 					this.isTips('敬请期待！');
 					return;

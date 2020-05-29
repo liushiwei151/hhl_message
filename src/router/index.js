@@ -9,6 +9,7 @@ import record from '@/components/redEnvelopes/record'
 import redEnvelopesReceive from '@/components/redEnvelopes/redEnvelopesReceive'
 import recordWeb from '@/components/redEnvelopes/recordWeb'
 import redPackDetails from '@/components/redEnvelopes/redPackDetails'
+import investigationWeb from '@/components/investigation/investigationWeb'
 
 Vue.use(Router)
 
@@ -57,6 +58,11 @@ export default new Router({
 			path:'/redPackDetails',
 			name:'redPackDetails',
 			component:redPackDetails
-		}
+		},
+    {
+      path:'/investigationWeb',
+      name:'investigationWeb',
+      component:investigationWeb
+    }
 	]
 })
