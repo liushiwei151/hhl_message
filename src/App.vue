@@ -2,7 +2,7 @@
 	<div id="app">
 		<router-view />
 		<elastic :imgUrl="alertImgUrl" v-show="isShow" :class="showAnimate"></elastic>
-		<!-- <div class="mask loadding" v-if="isshow"></div> -->
+		<div class="mask loadding" v-if="isshow"></div>
 		<transition name="fade">
 			<div class="boxs" v-show="tips.isShow">
 				<div class="tips">{{ tips.text }}</div>
@@ -212,6 +212,7 @@ ul {
 	width: 100%;
 	height: 100%;
 	position: fixed;
+  top: 0;
 	.tips {
 		max-width: 81vw;
 		font-size: 30px;
