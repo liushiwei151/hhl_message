@@ -2,9 +2,9 @@ import axios from 'axios'
 import qs from 'qs'
 // axios.defaults.timeout = 3000; //响应时间
 //测试
-// axios.defaults.baseURL = 'http://qrhhl.yunyutian.cn/huanghelou1916-market/market'; //配置接口地址
+axios.defaults.baseURL = 'http://qrhhl.yunyutian.cn/huanghelou1916-market/market'; //配置接口地址
 //正式
-axios.defaults.baseURL = 'https://qr.hhl1916.com/huanghelou1916-market/market';   //配置接口地址
+// axios.defaults.baseURL = 'https://qr.hhl1916.com/huanghelou1916-market/market';   //配置接口地址
 axios.defaults.withCredentials = true;
 
 //POST传参序列化(添加请求拦截器)
@@ -123,6 +123,18 @@ const sendDetail=(data)=>{
 const getTop20Record=(data)=>{
   return axios.get('index/getTop20Record/'+data)
 }
+//获取问卷调查信息
+const questionInfo = (data)=>{
+  return axios.get('questionnaire/'+data.id+'/'+data.openid)
+}
+//获取问卷题目信息
+const questionnaire = (data)=>{
+  return axios.get('questionnaire/'+data+'/questions')
+}
+//调查问卷提交答案
+const answers =(data)=>{
+  return axios.post('questionnaire/'+data.id+'/questions/answers/'+data.openid+'/batch',data.answer)
+}
 export default {
 	openHome,
 	market,
@@ -143,5 +155,8 @@ export default {
 	openRedPack,
 	receiveRecords,
 	sendDetail,
-  getTop20Record
+  getTop20Record,
+  questionInfo,
+  questionnaire,
+  answers
 }

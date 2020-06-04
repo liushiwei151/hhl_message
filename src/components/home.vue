@@ -72,7 +72,7 @@ export default {
 			userInfo: {
 				informImgUrl: '',
 				packageUrl: '',
-				questionnaireUrl: '',
+				questionnaireId: '',
 				pictureActivityId: '',
 				isRedPacketAdmin: false,
 				user: {
@@ -252,14 +252,11 @@ export default {
 		click(e) {
 			if (e == 0) {
 				//问卷调查
-        //todo
-        // this.$router.push('investigationWeb')
-       // return
-				if (this.userInfo.questionnaireUrl == '') {
+				if (this.userInfo.questionnaireId == '') {
 					this.isTips('敬请期待！');
 					return;
 				}
-				window.location.href = this.userInfo.questionnaireUrl;
+         this.$router.push('investigationWeb')
 			} else if (e == 1) {
 				if (this.userInfo.informImgUrl == '') {
 					this.isTips('敬请期待！');
