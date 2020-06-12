@@ -1,6 +1,11 @@
 <template>
   <div class="investigationWeb">
     <div class='backHome' @click="backHome"></div>
+    <!-- 初始开始不同状态页面 -->
+    <div class="start" v-if="status.text!==''">
+      <i :style="{ backgroundImage: 'url(./static/' + status.type + ')' }"></i>
+      <p>{{status.text}}</p>
+      </div>
     <!-- 初始开始页面 -->
     <div v-show="nowWeb === 0" class="startWeb" :style="{ backgroundImage: 'url(' + startBg + ')' }"><button @click="start()"></button></div>
     <div class="box" v-show="!(nowWeb === 0)">
@@ -49,7 +54,12 @@ export default {
       //是否调取成功其中一个api
       isApi: false,
       //是否能点击开始按钮
-      isStart:true
+      isStart:true,
+      //当前问卷调查状态
+      status:{
+        text:"",
+        type:0
+      }
     };
   },
   inject: ["isTips", "isloadingshow"],
@@ -107,10 +117,29 @@ export default {
               self.isloadingshow(false);
             }
           } else {
-            self.isTips(arrs[i].data.msg);
+            // self.isTips(arrs[i].data.msg);
+            self.isloadingshow(false);
+            self.isStart=false;
             if(arrs[i].data.code===6004){
-              self.isloadingshow(false);
-              self.isStart=false;
+              self.status={
+                text:"您已填写过此问卷！",
+                type:"peo1.png"
+              }
+            }else if(arrs[i].data.code===6003){
+              self.status={
+                text:"问卷已结束！",
+                type:"peo2.png"
+              }
+            }else if(arrs[i].data.code===6002){
+              self.status={
+                text:"问卷暂未开始！",
+                type:"peo4.png"
+              }
+            }else if(arrs[i].data.code===6001){
+              self.status={
+                text:"问卷不存在！",
+                type:"peo3.png"
+              }
             }
           }
         }
@@ -206,6 +235,32 @@ export default {
   overflow: hidden;
   overflow-y: auto;
   background-color: #f0f0f0;
+  .start{
+    position: fixed;
+    z-index: 99;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding-bottom: 200px;
+    p{
+      font-size: 40px;
+      padding-left: 5vw;
+    }
+    i{
+      display: block;
+      width: 212px;
+      height: 351px;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
+  }
   .backHome{
     position: fixed;
     left: 10px;
