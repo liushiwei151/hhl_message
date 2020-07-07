@@ -15,7 +15,7 @@
           <span>{{ item.topic }}</span>
         </div>
         <ul v-if="item.type === 2" class="type1">
-          <li v-for="(a, b) in item.options" :key="b" :class="item.answer === b ? 'active' : ''" @click="single(index, b)">{{ a.optionName }}</li>
+          <li v-for="(a, b) in item.options" :key="b" :class="item.answer === a.optionName ? 'active' : ''" @click="single(index, a.optionName)">{{ a.optionName }}</li>
         </ul>
         <ul v-if="item.type === 3" class="type2">
           <li v-for="(c, d) in item.options" :key="d" :class="item.answer[d] ? 'active' : ''" @click="multipl(index, d)">{{ c.optionName }}</li>
