@@ -168,8 +168,10 @@ export default {
       let data = this.question[this.nowWeb - 1];
       let self = this;
       if (this.nextButton === "提交问卷") {
+        this.isloadingshow(true);
         if (data.type === 3 && data.answer.indexOf(true) < 0) {
           this.isTips("请填写此题目！");
+          this.isloadingshow(false);
         } else {
           //todo 转换数据调取接口
           let answer =this.question.map(res=>{
@@ -194,8 +196,12 @@ export default {
             answer:answer
           };
           api.answers(data).then((res) => {
+            this.isloadingshow(false);
             if (res.data.code === 200) {
-              self.$router.push('/');
+              self.isTips('提交成功!');
+              setTimeout(()=>{
+                self.$router.push('/');
+              },2000)
             } else {
               self.isTips(res.data.msg);
             }
