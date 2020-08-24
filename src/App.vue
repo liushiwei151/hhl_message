@@ -42,18 +42,19 @@ export default {
     };
   },
   created() {
-    this.$router.push('/');
+    if(this.$route.name!=='home'){
+      this.$router.push('/');
+      }
     this.prohibitFontSize();
 		//禁止看到链接
 		this.prohibit();
   },
   methods: {
 	  prohibit(){
-		  if(this.$route.path=='/'||this.$route.path=='upload'){
+		  if(this.$route.path=="/"||this.$route.path=='upload'){
 			return
 		  }
 		  this.slice(location.href);
-		  console.log(this.$route.path)
 	  },
 	  //截取url
 	  slice(url) {

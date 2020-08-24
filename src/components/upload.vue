@@ -304,6 +304,7 @@ export default {
     },
     //选择图片
     add_img(e) {
+      const self =this;
       var _this = this;
       if (_this.activeData != '') {
         _this.isTips(_this.activeData);
@@ -312,8 +313,9 @@ export default {
       this.wx.chooseImage({
         count: _this.imgNum - _this.cwlocalIdImgs.length, // 默认9
         sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ['album'], // 可以指定来源是相册还是相机，默认二者都有
+        sourceType: ['camera'], // 可以指定来源是相册还是相机，默认二者都有
         success: function(res) {
+          self.isloadingshow(true);
           var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
           // 判断 ios
           if (window.__wxjs_is_wkwebview) {
@@ -416,6 +418,7 @@ export default {
     uploadImg(e) {
       var self = this;
       api.uploadImg(e).then(res => {
+        self.isloadingshow(false);
         if (res.data.code == 200) {
           if (self.isClick === false) {
             self.cwlocalIdImgs.push(res.data.data);

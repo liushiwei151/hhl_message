@@ -100,11 +100,11 @@ export default {
 	created() {
 		this.guding = document.documentElement.clientHeight;
 		this.isloadingshow(true);
-		//todo 以下修改
-		// this.slice('http://qrhhl.yunyutian.cn/market/index.html?openid=oXslc0zEvV5RwspCzgWcQMmL-_yA&customerId=0000003#/');
-		this.slice(location.href);
 	},
 	mounted() {
+    this.slice(location.href);
+    //todo 以下修改
+    // this.slice('http://qrhhl.yunyutian.cn/market/index.html?openid=oXslc0zEvV5RwspCzgWcQMmL-_yA&customerId=0000003#/');
 		this.startMove();
 		    if (this.number === this.textArr.length-1) {
 		      this.number = 0;
@@ -228,7 +228,9 @@ export default {
 				} else {
 					self.isTips(res.data.msg);
 				}
-			});
+			}).catch((err)=>{
+       	self.isTips(err);
+      });
 		},
 		getMarket(e) {
 			var self = this;
