@@ -167,6 +167,8 @@ export default {
     ansNext() {
       let data = this.question[this.nowWeb - 1];
       let self = this;
+      const useInfo = JSON.parse(localStorage.getItem('userInfo'));
+      const jwd =JSON.parse(localStorage.getItem('jwdcode'));
       if (this.nextButton === "提交问卷") {
         this.isloadingshow(true);
         if (data.type === 3 && data.answer.indexOf(true) < 0) {
@@ -193,7 +195,10 @@ export default {
           let data = {
             id: this.userInfo.questionnaireId,
             openid: this.userInfo.user.openid,
-            answer:answer
+            answer:answer,
+            longitude:jwd.jd,
+            latitude:jwd.wd,
+            memberNo:useInfo.user.memberNo
           };
           api.answers(data).then((res) => {
             this.isloadingshow(false);

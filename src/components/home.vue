@@ -221,6 +221,11 @@ export default {
 									latitude: res.latitude || 0,
 									longitude: res.longitude || 0
 								};
+                let value ={
+                  jd:res.longitude||0,
+                  wd:res.latitude||0
+                }
+                localStorage.setItem('jwdcode',JSON.stringify(value))
 								self.getMarket(data);
 							}
 						});

@@ -363,6 +363,7 @@ export default {
     addPicture() {
       var self = this;
       var useInfo = JSON.parse(localStorage.getItem('userInfo'));
+      const jwd =JSON.parse(localStorage.getItem('jwdcode'));
       if (self.pictureWorksId != '') {
         var data = {
           pictureActivityId: useInfo.pictureActivityId,
@@ -371,7 +372,10 @@ export default {
           // img2Url: this.cwlocalIdImgs[1],
           // img3Url: this.cwlocalIdImgs[2],
           remark: this.textarea,
-          pictureWorksId: self.pictureWorksId
+          pictureWorksId: self.pictureWorksId,
+          longitude:jwd.jd,
+          latitude:jwd.wd,
+          memberNo:useInfo.user.memberNo
         };
       } else {
         var data = {
@@ -380,7 +384,10 @@ export default {
           // img1Url: this.cwlocalIdImgs[0],
           // img2Url: this.cwlocalIdImgs[1],
           // img3Url: this.cwlocalIdImgs[2],
-          remark: this.textarea
+          remark: this.textarea,
+          longitude:jwd.jd,
+          latitude:jwd.wd,
+           memberNo:useInfo.user.memberNo
         };
       }
       for (let i = 0; i < this.cwlocalIdImgs.length; i++) {
