@@ -167,7 +167,6 @@ export default {
     ansNext() {
       let data = this.question[this.nowWeb - 1];
       let self = this;
-      const useInfo = JSON.parse(localStorage.getItem('userInfo'));
       const jwd =JSON.parse(localStorage.getItem('jwdcode'));
       if (this.nextButton === "提交问卷") {
         this.isloadingshow(true);
@@ -196,11 +195,13 @@ export default {
             id: this.userInfo.questionnaireId,
             openid: this.userInfo.user.openid,
             answer:answer,
+           
+          };
+          let data2={
             longitude:jwd.jd,
             latitude:jwd.wd,
-            memberNo:useInfo.user.memberNo
-          };
-          api.answers(data).then((res) => {
+          }
+          api.answers(data,data2).then((res) => {
             this.isloadingshow(false);
             if (res.data.code === 200) {
               self.isTips('提交成功!');

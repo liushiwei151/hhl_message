@@ -368,33 +368,26 @@ export default {
         var data = {
           pictureActivityId: useInfo.pictureActivityId,
           userId: useInfo.user.userId,
-          // img1Url: this.cwlocalIdImgs[0],
-          // img2Url: this.cwlocalIdImgs[1],
-          // img3Url: this.cwlocalIdImgs[2],
           remark: this.textarea,
-          pictureWorksId: self.pictureWorksId,
-          longitude:jwd.jd,
-          latitude:jwd.wd,
-          memberNo:useInfo.user.memberNo
+          pictureWorksId: self.pictureWorksId
         };
       } else {
         var data = {
           pictureActivityId: useInfo.pictureActivityId,
           userId: useInfo.user.userId,
-          // img1Url: this.cwlocalIdImgs[0],
-          // img2Url: this.cwlocalIdImgs[1],
-          // img3Url: this.cwlocalIdImgs[2],
-          remark: this.textarea,
-          longitude:jwd.jd,
-          latitude:jwd.wd,
-           memberNo:useInfo.user.memberNo
+          remark: this.textarea
         };
+      }
+      const data2={
+        longitude:jwd.jd,
+        latitude:jwd.wd,
+         memberNo:useInfo.user.memberNo
       }
       for (let i = 0; i < this.cwlocalIdImgs.length; i++) {
         var a = 'img' + (i + 1) + 'Url';
         data['' + a + ''] = this.cwlocalIdImgs[i];
       }
-      api.addPicture(data).then(res => {
+      api.addPicture(data,data2).then(res => {
         if (res.data.code == 200) {
           self.pictureWorksId = res.data.data;
           self.isClick = false;

@@ -33,8 +33,15 @@ const start =(data)=>{
 const openHome = () => {
 	return axios.get('/index/info/oXslc08kYzfJOxRnOpnCQR4EYULU/0/0')
 }
-const market = (data) => {
-	return axios.get('/index/info/' + data.openid + '/' + data.customerId + '/' + data.latitude + '/' + data.longitude)
+const market = (data,data2) => {
+  if(data2===null){
+    return axios.get('/index/info/' + data.openid + '/' + data.customerId + '/' + data.latitude + '/' + data.longitude)
+  }
+	return axios.get('/index/info/' + data.openid + '/' + data.customerId + '/' + data.latitude + '/' + data.longitude,{
+    params:{
+      adminMemberNo:data2
+    }
+  })
 }
 //获取wxsjdk权限
 const getJsSign = (data) => {
@@ -68,8 +75,8 @@ const uploadImg = (data) => {
 	return axios.post('/picture/upload/' + data)
 }
 //提交作品
-const addPicture = (data) => {
-	return axios.post('/picture/add', data)
+const addPicture = (data,data2) => {
+	return axios.post('/picture/add', data,{params:data2})
 }
 //删除提交的作品
 const delPicture = (data) => {
@@ -110,8 +117,8 @@ const create = (data) => {
 const sendRecords = (data) => {
 	return axios.get('packet/sendRecords/'+data.memberNo+'/'+data.openid+'?time='+data.time,)
 }
-const openRedPack=(data)=>{
-	return axios.post('packet/open',data)
+const openRedPack=(data,data2)=>{
+	return axios.post('packet/open',data,{params:data2})
 }
 //领取红包后的详情页
 const receiveRecords=(data)=>{
@@ -133,8 +140,8 @@ const questionnaire = (data)=>{
   return axios.get('questionnaire/'+data+'/questions')
 }
 //调查问卷提交答案
-const answers =(data)=>{
-  return axios.post('questionnaire/'+data.id+'/questions/answers/'+data.openid+'/batch',data.answer)
+const answers =(data,data2)=>{
+  return axios.post('questionnaire/'+data.id+'/questions/answers/'+data.openid+'/batch',data.answer,{params:data2})
 }
 export default {
 	openHome,

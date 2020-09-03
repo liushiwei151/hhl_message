@@ -225,8 +225,12 @@ export default {
                   jd:res.longitude||0,
                   wd:res.latitude||0
                 }
+                let data2=null
+                if(self.initData.length>=3){
+                  data2=self.initData[2];
+                }
                 localStorage.setItem('jwdcode',JSON.stringify(value))
-								self.getMarket(data);
+								self.getMarket(data,data2);
 							}
 						});
 					});

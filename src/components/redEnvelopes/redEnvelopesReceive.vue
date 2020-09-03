@@ -22,12 +22,17 @@
     methods:{
 		//打开红包
 		openRedPack(){
+      const jwd =JSON.parse(localStorage.getItem('jwdcode'));
 			let data={
 				redPacketId:this.userInfo.redPacketId,
 				memberNo:this.userInfo.user.memberNo,
 				openid:this.userInfo.user.openid
 			}
-			api.openRedPack(data).then(res=>{
+      let data2={
+        longitude:jwd.jd,
+        latitude:jwd.wd,
+      }
+			api.openRedPack(data,data2).then(res=>{
 				this.$router.push('recordWeb');
 				localStorage.setItem('resData',JSON.stringify(res.data))
 			})
