@@ -42,6 +42,7 @@ export default {
     };
   },
   created() {
+    localStorage.clear();
     if(this.$route.name!=='home'){
       this.$router.push('/');
       }

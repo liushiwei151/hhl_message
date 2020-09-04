@@ -225,12 +225,11 @@ export default {
                   jd:res.longitude||0,
                   wd:res.latitude||0
                 }
-                let data2=null
-                if(self.initData.length>=3){
-                  data2=self.initData[2];
+                localStorage.setItem('jwdcode',JSON.stringify(value));
+                if(localStorage.getItem('userInfo')){
+                  return 
                 }
-                localStorage.setItem('jwdcode',JSON.stringify(value))
-								self.getMarket(data,data2);
+                self.getMarket(data);
 							}
 						});
 					});
@@ -243,7 +242,11 @@ export default {
 		},
 		getMarket(e) {
 			var self = this;
-			api.market(e).then(res => {
+      let data2=null
+      if(self.initData.length>=3){
+        data2=self.initData[2];
+      }
+			api.market(e,data2).then(res => {
 				if (res.data.code == 200) {
 					self.userInfo = res.data.data;
 					self.status = res.data.data.user.status;

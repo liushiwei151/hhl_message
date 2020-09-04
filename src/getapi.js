@@ -2,11 +2,12 @@ import axios from 'axios'
 import qs from 'qs'
 // axios.defaults.timeout = 3000; //响应时间
 //测试
-axios.defaults.baseURL = 'http://qrhhl.yunyutian.cn/huanghelou1916-market/market'; //配置接口地址
+// axios.defaults.baseURL = 'http://qrhhl.yunyutian.cn/huanghelou1916-market/market'; //配置接口地址
 //正式
-// axios.defaults.baseURL = 'https://qr.hhl1916.com/huanghelou1916-market/market';   //配置接口地址
+axios.defaults.baseURL = 'https://qr.hhl1916.com/huanghelou1916-market/market';   //配置接口地址
 axios.defaults.withCredentials = true;
 
+//123456789
 //POST传参序列化(添加请求拦截器)
 axios.interceptors.request.use((config) => {
   let local=JSON.parse(localStorage.getItem('userInfo'))
