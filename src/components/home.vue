@@ -257,6 +257,9 @@ export default {
             self.getTop20Record(self.initData[0]);
           })
 					self.isloadingshow(false);
+          alert(
+                "为了给楼主们提供更优质的服务\n自2020年9月11日起\n每天晚上9:00至次日早上7:30\n进行系统维护升级\n预计维护时间两周\n给您造成的不便敬请谅解。"
+              );
 				} else {
 					self.isTips(res.data.msg);
 				}
